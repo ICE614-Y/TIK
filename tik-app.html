@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>TIK — 導師後台</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bk:#0a0a0a;--bk2:#111;--bk3:#1a1a1a;--bk4:#252525;--bk5:#333;
+  --wh:#fff;--lg:#f6f6f4;--mg:#e2e2de;--dg:#888;--ddg:#555;
+  --green:#166534;--green-bg:#f0fdf4;
+  --amber:#92400e;--amber-bg:#fffbeb;
+  --red:#991b1b;--red-bg:#fef2f2;
+  --blue:#1e40af;--blue-bg:#eff6ff;
+  --sans:'DM Sans',sans-serif;
+  --serif:'DM Serif Display',serif;
+  --r:10px;--r2:14px;
+}
+body{font-family:var(--sans);background:var(--lg);color:var(--bk);font-size:14px;min-height:100vh;}
+
+/* ── LAYOUT ── */
+.shell{display:grid;grid-template-columns:230px 1fr;grid-template-rows:54px 1fr;height:100vh;overflow:hidden;}
+header{grid-column:1/-1;background:var(--bk);display:flex;align-items:center;justify-content:space-between;padding:0 22px;z-index:200;}
+aside{background:var(--bk2);border-right:1px solid var(--bk4);overflow-y:auto;display:flex;flex-direction:column;}
+main{overflow-y:auto;padding:26px 28px;}
+
+/* ── LOGO ── */
+.logo{display:flex;align-items:center;gap:10px;}
+.tiles{display:flex;gap:3px;}
+.tile{width:25px;height:25px;background:#fff;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:13px;color:#0a0a0a;position:relative;}
+.tile.k::after{content:'✓';position:absolute;top:1px;right:2px;font-size:7px;font-family:var(--sans);font-weight:500;}
+.logo-text{font-family:var(--serif);font-size:17px;color:#fff;letter-spacing:2px;}
+.logo-tag{font-size:10px;color:#444;letter-spacing:1px;}
+.tutor-chip{display:flex;align-items:center;gap:8px;background:var(--bk3);border-radius:20px;padding:4px 12px 4px 5px;}
+.av{width:28px;height:28px;border-radius:50%;background:#fff;color:#0a0a0a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;}
+.av.dark{background:var(--bk);color:#fff;}
+
+/* ── NAV ── */
+.nav-sec{padding:18px 14px 4px;}
+.nav-lbl{font-size:10px;color:#3a3a3a;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;padding:0 8px 6px;}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;cursor:pointer;color:#666;font-size:13px;margin-bottom:2px;transition:.12s;user-select:none;}
+.ni:hover{background:var(--bk3);color:#bbb;}
+.ni.active{background:#fff;color:#0a0a0a;font-weight:500;}
+.ni-ico{font-size:15px;width:18px;text-align:center;}
+.nb{margin-left:auto;background:#c53030;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;}
+.nav-bottom{margin-top:auto;padding:16px;border-top:1px solid var(--bk4);}
+.api-status{font-size:11px;color:#333;line-height:1.6;}
+.api-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;margin-right:4px;vertical-align:middle;}
+
+/* ── VIEWS ── */
+.view{display:none;}
+.view.on{display:block;animation:fi .18s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── PAGE HEADER ── */
+.ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;}
+.pt{font-family:var(--serif);font-size:26px;line-height:1.1;}
+.ps{font-size:12px;color:var(--dg);margin-top:3px;font-weight:300;}
+
+/* ── STAT CARDS ── */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px;}
+.sc{background:#fff;border:1px solid var(--mg);border-radius:var(--r);padding:16px 18px;}
+.sc.inv{background:var(--bk);}
+.sn{font-family:var(--serif);font-size:32px;line-height:1;}
+.sl{font-size:11px;color:var(--dg);margin-top:5px;font-weight:300;}
+.sc.inv .sn{color:#fff;}
+.sc.inv .sl{color:#444;}
+
+/* ── TABLE ── */
+.tw{background:#fff;border:1px solid var(--mg);border-radius:var(--r);overflow:hidden;margin-bottom:20px;}
+.th2{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--mg);}
+.tt{font-weight:500;font-size:13px;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;color:var(--dg);font-weight:400;text-align:left;padding:9px 18px;border-bottom:1px solid var(--mg);letter-spacing:.5px;text-transform:uppercase;}
+td{padding:11px 18px;border-bottom:1px solid #f2f2f0;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafaf8;cursor:pointer;}
+.nc{display:flex;align-items:center;gap:9px;}
+.sname{font-size:13px;font-weight:500;}
+.sg{font-size:11px;color:var(--dg);}
+.pb{width:70px;height:4px;background:#eee;border-radius:2px;overflow:hidden;display:inline-block;}
+.pf{height:100%;background:var(--bk);border-radius:2px;}
+.pf.lo{background:#d97706;}
+.pct{font-size:12px;font-weight:500;margin-left:6px;}
+.pct.lo{color:#d97706;}
+.chip{display:inline-flex;align-items:center;font-size:10px;padding:2px 8px;border-radius:20px;}
+.ch-w{background:var(--amber-bg);color:var(--amber);}
+.ch-g{background:var(--green-bg);color:var(--green);}
+.ch-b{background:var(--blue-bg);color:var(--blue);}
+
+/* ── BUTTONS ── */
+.btn{padding:7px 14px;font-size:12px;border-radius:7px;border:1px solid var(--mg);background:#fff;cursor:pointer;transition:.12s;font-family:var(--sans);display:inline-flex;align-items:center;gap:5px;}
+.btn:hover{background:var(--bk);color:#fff;border-color:var(--bk);}
+.btn.pri{background:var(--bk);color:#fff;border-color:var(--bk);}
+.btn.pri:hover{background:#333;}
+.btn.sm{padding:5px 11px;font-size:11px;}
+.btn:disabled{background:#e0e0e0;color:#999;border-color:#e0e0e0;cursor:not-allowed;}
+
+/* ── CHAT LAYOUT ── */
+.chat-shell{display:grid;grid-template-columns:240px 1fr;gap:0;background:#fff;border:1px solid var(--mg);border-radius:var(--r2);overflow:hidden;height:calc(100vh - 140px);}
+.student-list{border-right:1px solid var(--mg);overflow-y:auto;display:flex;flex-direction:column;}
+.sl-head{padding:12px 14px;border-bottom:1px solid var(--mg);font-size:12px;font-weight:500;background:var(--lg);}
+.si{display:flex;align-items:center;gap:9px;padding:10px 14px;cursor:pointer;border-bottom:1px solid #f5f5f3;transition:.1s;}
+.si:hover{background:#f9f9f7;}
+.si.sel{background:var(--bk);color:#fff;}
+.si.sel .sg2{color:#888;}
+.si.sel .pct2{color:#aaa;}
+.sg2{font-size:11px;color:var(--dg);margin-top:1px;}
+.pct2{font-size:11px;font-weight:500;margin-left:auto;}
+.pct2.lo{color:#d97706;}
+.dot-warn{width:7px;height:7px;border-radius:50%;background:#d97706;flex-shrink:0;}
+
+/* ── CHAT ── */
+.chat-area{display:flex;flex-direction:column;height:100%;}
+.chat-topbar{padding:12px 18px;border-bottom:1px solid var(--mg);display:flex;align-items:center;justify-content:space-between;background:var(--lg);flex-shrink:0;}
+.chat-info{display:flex;align-items:center;gap:10px;}
+.chat-messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;}
+.chat-input-area{padding:12px 16px;border-top:1px solid var(--mg);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;background:#fff;}
+.msg-row{display:flex;flex-direction:column;}
+.msg-row.usr{align-items:flex-end;}
+.msg-row.ai{align-items:flex-start;}
+.msg-lbl{font-size:10px;color:var(--dg);margin-bottom:3px;}
+.bubble{max-width:80%;padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.6;}
+.bubble.usr{background:var(--bk);color:#fff;border-radius:12px 12px 3px 12px;}
+.bubble.ai{background:var(--lg);border:1px solid var(--mg);border-radius:12px 12px 12px 3px;}
+.bubble.sys{background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:8px;font-size:12px;color:var(--blue);max-width:90%;}
+.chat-input{flex:1;padding:9px 13px;border:1px solid var(--mg);border-radius:8px;font-size:13px;font-family:var(--sans);outline:none;resize:none;max-height:120px;transition:.15s;}
+.chat-input:focus{border-color:#aaa;}
+.send-btn{width:38px;height:38px;background:var(--bk);color:#fff;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.12s;flex-shrink:0;}
+.send-btn:hover{background:#333;}
+.send-btn:disabled{background:#ccc;cursor:not-allowed;}
+.typing{display:flex;align-items:center;gap:4px;padding:8px 12px;background:var(--lg);border:1px solid var(--mg);border-radius:8px;font-size:12px;color:var(--dg);}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--dg);animation:bounce .8s infinite;}
+.typing span:nth-child(2){animation-delay:.2s;}
+.typing span:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+/* photo upload area */
+.upload-zone{border:1.5px dashed var(--mg);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:.15s;background:#fafaf8;margin-top:6px;}
+.upload-zone:hover{border-color:#999;background:#f5f5f3;}
+.upload-zone input{display:none;}
+.uploaded-img{max-width:180px;max-height:180px;border-radius:6px;border:1px solid var(--mg);margin-top:6px;}
+
+/* quick-mark buttons */
+.qm-grid{display:grid;gap:4px;margin:8px 0;}
+.qm-row{display:flex;align-items:center;gap:6px;font-size:12px;}
+.qm-q{color:var(--dg);min-width:32px;}
+.qm-btn{padding:3px 10px;font-size:11px;border-radius:5px;border:1px solid var(--mg);background:#fff;cursor:pointer;}
+.qm-btn.cor{background:var(--green-bg);border-color:#86efac;color:var(--green);}
+.qm-btn.wro{background:var(--red-bg);border-color:#fca5a5;color:var(--red);}
+
+/* bulk mode */
+.bulk-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.bulk-card{background:#fff;border:1px solid var(--mg);border-radius:var(--r);padding:16px;position:relative;}
+.bulk-card.done{border-color:#86efac;}
+.bulk-card.generating{border-color:#93c5fd;}
+.bulk-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:4px;border:1.5px solid var(--mg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;background:#fff;}
+.bulk-check.checked{background:var(--bk);border-color:var(--bk);color:#fff;}
+.bulk-result{margin-top:10px;font-size:12px;color:var(--dg);line-height:1.6;border-top:1px solid var(--mg);padding-top:10px;}
+.bulk-mini-loader{display:inline-block;width:12px;height:12px;border:1.5px solid #ddd;border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:4px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* memory panel */
+.mem-panel{background:var(--bk3);border-radius:8px;padding:12px 14px;margin-top:10px;font-size:12px;}
+.mem-row{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--bk4);color:#aaa;line-height:1.4;}
+.mem-row:last-child{border-bottom:none;}
+.mem-key{color:#555;min-width:72px;flex-shrink:0;font-size:11px;}
+
+/* progress view */
+.prog-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.pc{background:#fff;border:1px solid var(--mg);border-radius:var(--r);padding:18px;}
+.pc.full{grid-column:1/-1;}
+.wk-row{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.wk-lbl{font-size:11px;color:var(--dg);min-width:78px;font-weight:300;}
+.wk-bar{flex:1;height:5px;background:#eee;border-radius:3px;overflow:hidden;}
+.wk-fill{height:100%;background:var(--bk);border-radius:3px;transition:width .7s ease;}
+.wk-fill.lo{background:#d97706;}
+.wk-pct{font-size:11px;font-weight:500;min-width:28px;text-align:right;}
+
+/* report card */
+.rcard{background:var(--bk);border-radius:var(--r);padding:20px;color:#fff;}
+.rt{font-family:var(--serif);font-size:20px;margin-bottom:3px;}
+.rs{font-size:12px;color:#444;margin-bottom:14px;}
+.rc{font-size:13px;line-height:1.8;color:#bbb;font-weight:300;margin-bottom:14px;}
+.ra{display:flex;gap:8px;}
+.rbtn{padding:7px 14px;font-size:12px;border-radius:6px;border:1px solid var(--bk4);background:transparent;color:#888;cursor:pointer;transition:.12s;}
+.rbtn:hover{background:#fff;color:#0a0a0a;border-color:#fff;}
+
+/* API key modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:flex;align-items:center;justify-content:center;}
+.modal{background:#fff;border-radius:var(--r2);padding:28px;width:420px;max-width:92vw;}
+.modal-title{font-family:var(--serif);font-size:20px;margin-bottom:6px;}
+.modal-sub{font-size:13px;color:var(--dg);margin-bottom:20px;line-height:1.5;}
+.modal input{width:100%;padding:10px 13px;border:1px solid var(--mg);border-radius:8px;font-size:13px;font-family:var(--sans);outline:none;margin-bottom:14px;}
+.modal input:focus{border-color:#aaa;}
+
+/* today bar */
+.today-bar{background:var(--bk);color:#fff;border-radius:var(--r);padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;}
+.today-text{font-size:13px;}
+.today-sub{font-size:11px;color:#555;margin-top:2px;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px;}
+
+@media(max-width:800px){
+  .shell{grid-template-columns:1fr;}
+  aside{display:none;}
+  .chat-shell{grid-template-columns:1fr;}
+  .student-list{display:none;}
+  .bulk-grid,.prog-grid,.stats{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- API KEY MODAL -->
+<div class="modal-bg" id="api-modal">
+  <div class="modal">
+    <div class="modal-title">設定 API Key</div>
+    <div class="modal-sub">請輸入你的 Anthropic Claude API Key。儲存在本機瀏覽器，不會上傳任何伺服器。</div>
+    <input type="password" id="api-input" placeholder="sk-ant-..." />
+    <div style="display:flex;gap:8px;">
+      <button class="btn pri" style="flex:1;" onclick="saveKey()">儲存並開始使用</button>
+      <button class="btn" onclick="skipKey()">先跳過（Demo 模式）</button>
+    </div>
+    <div style="font-size:11px;color:#bbb;margin-top:12px;">
+      沒有 API Key？<a href="https://console.anthropic.com" target="_blank" style="color:var(--blue);">到 Anthropic Console 申請</a>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="tiles">
+      <div class="tile">T</div><div class="tile">I</div><div class="tile k">K</div>
+    </div>
+    <div>
+      <div class="logo-text">TIK</div>
+    </div>
+    <div class="logo-tag">Track · Improve · Know</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <span style="font-size:11px;color:#333;" id="api-status-top">🔴 未設定 API Key</span>
+    <div class="tutor-chip">
+      <div class="av" style="background:#333;color:#fff;">李</div>
+      <span style="font-size:12px;color:#aaa;">李導師</span>
+    </div>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside>
+  <div class="nav-sec">
+    <div class="nav-lbl">主選單</div>
+    <div class="ni active" data-view="overview" onclick="nav(this)">
+      <span class="ni-ico">⊞</span>班級總覽
+      <span class="nb" id="nb-warn">2</span>
+    </div>
+    <div class="ni" data-view="chat" onclick="nav(this)">
+      <span class="ni-ico">◈</span>個人對話
+    </div>
+    <div class="ni" data-view="bulk" onclick="nav(this)">
+      <span class="ni-ico">⊕</span>批量備課
+    </div>
+    <div class="ni" data-view="progress" onclick="nav(this)">
+      <span class="ni-ico">◇</span>進度追蹤
+    </div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">設定</div>
+    <div class="ni" onclick="document.getElementById('api-modal').style.display='flex'">
+      <span class="ni-ico">⚙</span>API 設定
+    </div>
+  </div>
+  <div class="nav-bottom">
+    <div class="api-status" id="api-status-side">
+      <span class="api-dot" style="background:#555;"></span>未設定 API Key
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main>
+
+<!-- ══ OVERVIEW ══ -->
+<div class="view on" id="view-overview">
+  <div class="ph">
+    <div><div class="pt">班級總覽</div><div class="ps">中二英文班 · 2025年5月</div></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn" onclick="nav(document.querySelector('[data-view=bulk]'))">⊕ 今日備課</button>
+      <button class="btn pri" onclick="nav(document.querySelector('[data-view=chat]'))">◈ 個人對話</button>
+    </div>
+  </div>
+
+  <div class="today-bar">
+    <div>
+      <div class="today-text">📅 今日備課提醒</div>
+      <div class="today-sub">陳小明、張志豪 上次弱點未跟進，建議今日優先處理</div>
+    </div>
+    <button class="btn sm" style="background:transparent;border-color:#333;color:#888;" onclick="nav(document.querySelector('[data-view=bulk]'))">前往備課</button>
+  </div>
+
+  <div class="stats">
+    <div class="sc"><div class="sn">8</div><div class="sl">班級學生</div></div>
+    <div class="sc"><div class="sn">75%</div><div class="sl">本週平均完成率</div></div>
+    <div class="sc inv"><div class="sn">2</div><div class="sl">需要關注</div></div>
+  </div>
+
+  <div class="tw">
+    <div class="th2">
+      <span class="tt">學生列表</span>
+      <span style="font-size:11px;color:var(--dg);">點擊學生進入個人對話</span>
+    </div>
+    <table><thead><tr>
+      <th>學生</th><th>本週答對率</th><th>完成</th><th>狀態</th><th>操作</th>
+    </tr></thead>
+    <tbody id="overview-tbody"></tbody></table>
+  </div>
+</div>
+
+<!-- ══ CHAT ══ -->
+<div class="view" id="view-chat" style="padding:0;margin:-26px -28px;height:calc(100vh - 54px);">
+  <div class="chat-shell">
+    <!-- Student list -->
+    <div class="student-list">
+      <div class="sl-head">學生列表</div>
+      <div id="chat-student-list"></div>
+    </div>
+    <!-- Chat area -->
+    <div class="chat-area">
+      <div class="chat-topbar">
+        <div class="chat-info">
+          <div class="av dark" id="chat-av">陳</div>
+          <div>
+            <div style="font-weight:500;font-size:13px;" id="chat-name">陳小明</div>
+            <div style="font-size:11px;color:var(--dg);" id="chat-sub">中二 · 英文 · 答對率 52%</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn sm" onclick="showMemory()">記憶庫</button>
+          <button class="btn sm" onclick="exportPDF()">⬇ PDF</button>
+          <button class="btn sm" onclick="showQuickMark()">批改答卷</button>
+        </div>
+      </div>
+
+      <!-- Memory panel (hidden) -->
+      <div id="memory-panel" style="display:none;padding:10px 16px;border-bottom:1px solid var(--mg);">
+        <div style="font-size:11px;font-weight:500;color:var(--dg);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase;">AI 記憶庫</div>
+        <div class="mem-panel" id="memory-content"></div>
+      </div>
+
+      <!-- Quick mark panel (hidden) -->
+      <div id="quickmark-panel" style="display:none;padding:12px 16px;border-bottom:1px solid var(--mg);background:var(--lg);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:500;">批改答卷</div>
+          <button class="btn sm" onclick="closeQuickMark()">關閉</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;">
+          <div>
+            <div style="font-size:11px;color:var(--dg);margin-bottom:6px;">快速標記（最近練習）</div>
+            <div class="qm-grid" id="qm-grid"></div>
+            <button class="btn pri sm" style="width:100%;margin-top:6px;" onclick="submitQuickMark()">提交批改結果</button>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--dg);margin-bottom:6px;">或上傳答卷相片</div>
+            <label class="upload-zone" id="upload-zone">
+              <input type="file" id="photo-input" accept="image/*" onchange="handlePhoto(event)"/>
+              <div style="font-size:22px;margin-bottom:4px;">📷</div>
+              <div style="font-size:12px;color:var(--dg);">點擊拍照或選擇圖片</div>
+              <div style="font-size:11px;color:#bbb;margin-top:2px;">AI 自動批改並分析弱點</div>
+            </label>
+            <img id="preview-img" class="uploaded-img" style="display:none;"/>
+            <button class="btn pri sm" id="analyze-photo-btn" style="width:100%;margin-top:6px;display:none;" onclick="analyzePhoto()">AI 批改此相片</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chat-messages"></div>
+
+      <div class="chat-input-area">
+        <textarea class="chat-input" id="chat-input" rows="1" placeholder="輸入訊息… 例：給小明出 5 題 Present Perfect 填充題" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMsg()">↑</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BULK ══ -->
+<div class="view" id="view-bulk">
+  <div class="ph">
+    <div><div class="pt">批量備課</div><div class="ps">選擇學生，AI 自動生成今日合適練習</div></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn" onclick="selectAll()">全選</button>
+      <button class="btn pri" id="bulk-gen-btn" onclick="bulkGenerate()">⊕ 生成選中學生的練習</button>
+    </div>
+  </div>
+  <div style="background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:var(--r);padding:11px 15px;margin-bottom:16px;font-size:12px;color:var(--blue);line-height:1.5;">
+    ✦ AI 會根據每位學生的記憶（課本範圍、上次弱點、答對率趨勢）自動決定今日最合適的練習內容和難度，無需額外設定。
+  </div>
+  <div class="bulk-grid" id="bulk-grid"></div>
+</div>
+
+<!-- ══ PROGRESS ══ -->
+<div class="view" id="view-progress">
+  <div class="ph">
+    <div><div class="pt">進度追蹤</div><div class="ps">學生弱點分析 · 個人化學習計劃</div></div>
+    <select id="prog-select" class="btn" style="font-family:var(--sans);" onchange="renderProgress()"></select>
+  </div>
+  <div id="prog-content"></div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+const STUDENTS = [
+  {id:1,name:'陳小明',init:'陳',grade:'中二',rate:52,done:4,warn:true,
+   memory:{book:'Oxford Grammar 3',scope:'Unit 5-8 Present Perfect / Past Perfect',level:'中等',weaknesses:'Present Perfect vs Simple Past 時態混淆',history:[{date:'5/14',rate:48},{date:'5/16',rate:55},{date:'5/19',rate:52}],lastPractice:['Q1:✓','Q2:✓','Q3:✗','Q4:✓','Q5:✗'],notes:'需要加強時態區別練習'}},
+  {id:2,name:'李大文',init:'李',grade:'中二',rate:78,done:5,warn:false,
+   memory:{book:'Oxford Grammar 3',scope:'Unit 5-8',level:'中等偏高',weaknesses:'Past Perfect 用法偶有混淆',history:[{date:'5/14',rate:72},{date:'5/16',rate:75},{date:'5/19',rate:78}],lastPractice:['Q1:✓','Q2:✓','Q3:✓','Q4:✗','Q5:✓'],notes:'進度良好，可嘗試進階題'}},
+  {id:3,name:'黃美儀',init:'黃',grade:'中二',rate:85,done:5,warn:false,
+   memory:{book:'Oxford Grammar 3',scope:'Unit 5-8',level:'較高',weaknesses:'無明顯弱點',history:[{date:'5/14',rate:80},{date:'5/16',rate:83},{date:'5/19',rate:85}],lastPractice:['Q1:✓','Q2:✓','Q3:✓','Q4:✓','Q5:✓'],notes:'表現優秀，建議加入挑戰題'}},
+  {id:4,name:'張志豪',init:'張',grade:'中二',rate:48,done:3,warn:true,
+   memory:{book:'Oxford Grammar 3',scope:'Unit 5-6',level:'基礎',weaknesses:'Present Perfect 基本結構不熟，have/has 用法混淆',history:[{date:'5/14',rate:42},{date:'5/16',rate:48},{date:'5/19',rate:48}],lastPractice:['Q1:✗','Q2:✓','Q3:✗'],notes:'需要從基礎鞏固，建議減少題量但提升準確性'}},
+  {id:5,name:'吳小玲',init:'吳',grade:'中二',rate:91,done:5,warn:false,
+   memory:{book:'Oxford Grammar 3',scope:'Unit 5-8',level:'高',weaknesses:'無',history:[{date:'5/14',rate:85},{date:'5/16',rate:88},{date:'5/19',rate:91}],lastPractice:['Q1:✓','Q2:✓','Q3:✓','Q4:✓','Q5:✓'],notes:'最強學生，可以做延伸閱讀題'}},
+  {id:6,name:'劉德強',init:'劉',grade:'中二',rate:67,done:5,warn:false,
+   memory:{book:'Oxford Grammar 3',scope:'Unit 5-8',level:'中等',weaknesses:'時間副詞 yet/already 用法不穩',history:[{date:'5/14',rate:60},{date:'5/16',rate:64},{date:'5/19',rate:67}],lastPractice:['Q1:✓','Q2:✓','Q3:✗','Q4:✓','Q5:✓'],notes:'穩步提升中'}},
+  {id:7,name:'鄭嘉慧',init:'鄭',grade:'中二',rate:72,done:4,warn:false,
+   memory:{book:'Oxford Grammar 3',scope:'Unit 5-8',level:'中等',weaknesses:'開放式問題句式不完整',history:[{date:'5/14',rate:68},{date:'5/16',rate:70},{date:'5/19',rate:72}],lastPractice:['Q1:✓','Q2:✗','Q3:✓','Q4:✓'],notes:'書面表達需要加強'}},
+  {id:8,name:'何建文',init:'何',grade:'中二',rate:55,done:3,warn:false,
+   memory:{book:'Oxford Grammar 3',scope:'Unit 5-7',level:'中等偏低',weaknesses:'否定式 haven\'t/hasn\'t 用法出錯',history:[{date:'5/14',rate:50},{date:'5/16',rate:53},{date:'5/19',rate:55}],lastPractice:['Q1:✓','Q2:✗','Q3:✓'],notes:'需要多做否定句練習'}},
+];
+
+let apiKey = (() => {
+  try {
+    const raw = localStorage.getItem('tik_api_key');
+    if (!raw) return '';
+    return JSON.parse(raw);
+  } catch(e) {
+    return localStorage.getItem('tik_api_key') || '';
+  }
+})();
+let selStudent = 0;
+let chatHistories = {};
+let bulkResults = {};
+let bulkSelected = new Set([0,1,2,3,4,5,6,7]);
+let photoDataUrl = null;
+let lastGeneratedQs = [];
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+function safeGet(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch(e) { return fallback; }
+}
+function safeSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
+
+function init() {
+  // Load saved memories
+  STUDENTS.forEach((s,i) => {
+    const saved = safeGet('tik_mem_'+s.id, null);
+    if (saved) STUDENTS[i].memory = Object.assign({}, STUDENTS[i].memory, saved);
+    chatHistories[i] = safeGet('tik_chat_'+s.id, []);
+  });
+
+  if (apiKey) {
+    hideModal();
+    updateApiStatus(true);
+  }
+
+  renderOverview();
+  renderChatStudentList();
+  renderBulkGrid();
+  renderProgSelect();
+  renderProgress();
+  selectChatStudent(0);
+}
+
+function saveKey() {
+  apiKey = document.getElementById('api-input').value.trim();
+  if (!apiKey) return alert('請輸入 API Key');
+  safeSet('tik_api_key', apiKey);
+  hideModal();
+  updateApiStatus(true);
+}
+function skipKey() { hideModal(); }
+function hideModal() { document.getElementById('api-modal').style.display = 'none'; }
+
+function anthropicHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'x-api-key': apiKey,
+    'anthropic-version': '2023-06-01',
+    'anthropic-dangerous-direct-browser-access': 'true'
+  };
+}
+
+async function parseAnthropicResponse(res) {
+  const data = await res.json();
+  if (!res.ok) {
+    const msg = data.error?.message || data.message || `HTTP ${res.status}`;
+    throw new Error(msg);
+  }
+  if (!data.content?.length) throw new Error('API 回傳空內容');
+  return data.content.map(c => c.text || '').join('');
+}
+
+function updateApiStatus(on) {
+  const dot = document.querySelector('.api-dot');
+  const side = document.getElementById('api-status-side');
+  const top = document.getElementById('api-status-top');
+  if (on) {
+    dot.style.background = '#22c55e';
+    side.innerHTML = '<span class="api-dot"></span>Claude API 已連接';
+    top.textContent = '🟢 Claude API 已連接';
+  } else {
+    dot.style.background = '#555';
+    side.innerHTML = '<span class="api-dot" style="background:#555"></span>未設定 API Key';
+    top.textContent = '🔴 未設定 API Key';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════
+function nav(el) {
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  const id = el.dataset.view;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById('view-'+id).classList.add('on');
+  if (id === 'progress') renderProgress();
+}
+
+function navTo(id) {
+  const el = document.querySelector(`[data-view=${id}]`);
+  if (el) nav(el);
+}
+
+// ═══════════════════════════════════════════════
+// OVERVIEW
+// ═══════════════════════════════════════════════
+function renderOverview() {
+  document.getElementById('overview-tbody').innerHTML = STUDENTS.map((s,i) => `
+    <tr onclick="goChat(${i})">
+      <td><div class="nc"><div class="av dark">${s.init}</div><div><div class="sname">${s.name}</div><div class="sg">${s.grade}</div></div></div></td>
+      <td><span class="pb"><span class="pf ${s.rate<60?'lo':''}" style="width:${s.rate}%"></span></span><span class="pct ${s.rate<60?'lo':''}">${s.rate}%</span></td>
+      <td>${s.done}/5</td>
+      <td><span class="chip ${s.warn?'ch-w':'ch-g'}">${s.warn?'需要關注':'進度良好'}</span></td>
+      <td onclick="event.stopPropagation()">
+        <button class="btn sm" onclick="goChat(${i})">對話</button>
+        <button class="btn sm" style="margin-left:4px;" onclick="navTo('progress');document.getElementById('prog-select').value=${i};renderProgress()">進度</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function goChat(i) { selectChatStudent(i); navTo('chat'); }
+
+// ═══════════════════════════════════════════════
+// CHAT
+// ═══════════════════════════════════════════════
+function renderChatStudentList() {
+  document.getElementById('chat-student-list').innerHTML = STUDENTS.map((s,i) => `
+    <div class="si ${i===selStudent?'sel':''}" onclick="selectChatStudent(${i})">
+      <div class="av ${i===selStudent?'':'dark'}">${s.init}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:500;">${s.name}</div>
+        <div class="sg2">${s.grade}</div>
+      </div>
+      ${s.warn?'<div class="dot-warn"></div>':''}
+      <span class="pct2 ${s.rate<60?'lo':''}">${s.rate}%</span>
+    </div>
+  `).join('');
+}
+
+function selectChatStudent(i) {
+  selStudent = i;
+  renderChatStudentList();
+  const s = STUDENTS[i];
+  document.getElementById('chat-av').textContent = s.init;
+  document.getElementById('chat-name').textContent = s.name;
+  document.getElementById('chat-sub').textContent = `${s.grade} · 英文 · 答對率 ${s.rate}%`;
+  document.getElementById('memory-panel').style.display = 'none';
+  document.getElementById('quickmark-panel').style.display = 'none';
+  renderMessages();
+
+  // Auto greeting if no history
+  if (!chatHistories[i] || chatHistories[i].length === 0) {
+    setTimeout(() => autoGreet(i), 400);
+  }
+}
+
+async function autoGreet(i) {
+  const s = STUDENTS[i];
+  const weak = s.memory.weaknesses || '無記錄';
+  let msg = `你好！我是 ${s.name} 的專屬 AI 助理。\n\n`;
+  msg += `📚 **課本：** ${s.memory.book}\n`;
+  msg += `📝 **考試範圍：** ${s.memory.scope}\n`;
+  msg += `📊 **最新答對率：** ${s.rate}%\n`;
+  if (weak && weak !== '無') {
+    msg += `\n⚠️ **主要弱點：** ${weak}\n\n建議今日練習：針對「${weak}」出 3-5 題鞏固。需要我立刻生成嗎？`;
+  } else {
+    msg += `\n進度良好！需要我生成新練習嗎？`;
+  }
+  addMsg(i, 'ai', msg);
+}
+
+function renderMessages() {
+  const container = document.getElementById('chat-messages');
+  const history = chatHistories[selStudent] || [];
+  container.innerHTML = '';
+  history.forEach(m => appendMsgEl(container, m.role, m.content));
+  container.scrollTop = container.scrollHeight;
+}
+
+function appendMsgEl(container, role, content) {
+  const div = document.createElement('div');
+  div.className = `msg-row ${role==='user'?'usr':'ai'}`;
+  const label = role === 'user' ? '導師' : `TIK · ${STUDENTS[selStudent].name}助理`;
+  div.innerHTML = `
+    <div class="msg-lbl">${label}</div>
+    <div class="bubble ${role==='user'?'usr':'ai'}">${content.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</div>
+  `;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function addMsg(i, role, content) {
+  if (!chatHistories[i]) chatHistories[i] = [];
+  chatHistories[i].push({role, content});
+  safeSet('tik_chat_'+STUDENTS[i].id, chatHistories[i]);
+  if (i === selStudent) {
+    const container = document.getElementById('chat-messages');
+    appendMsgEl(container, role, content);
+  }
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+}
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+async function sendMsg() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = 'auto';
+
+  addMsg(selStudent, 'user', text);
+  await callClaude(selStudent, text);
+}
+
+async function callClaude(i, userMsg) {
+  const s = STUDENTS[i];
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+
+  // Show typing
+  const container = document.getElementById('chat-messages');
+  const typingEl = document.createElement('div');
+  typingEl.className = 'msg-row ai';
+  typingEl.id = 'typing-indicator';
+  typingEl.innerHTML = `<div class="msg-lbl">TIK · ${s.name}助理</div><div class="typing"><span></span><span></span><span></span> AI 思考中…</div>`;
+  container.appendChild(typingEl);
+  container.scrollTop = container.scrollHeight;
+
+  const systemPrompt = buildSystemPrompt(s);
+  const prior = (chatHistories[i] || []).slice(0, -1).slice(-12).map(m => ({
+    role: m.role === 'ai' ? 'assistant' : 'user',
+    content: m.content
+  }));
+
+  try {
+    let reply;
+    if (!apiKey) {
+      await new Promise(r => setTimeout(r, 1200));
+      reply = demoReply(userMsg, s);
+    } else {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: anthropicHeaders(),
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1200,
+          system: systemPrompt,
+          messages: [...prior, {role: 'user', content: userMsg}]
+        })
+      });
+      reply = await parseAnthropicResponse(res);
+    }
+
+    typingEl.remove();
+    addMsg(i, 'ai', reply);
+
+    // Auto-extract generated questions for quick mark
+    const qs = extractQuestions(reply);
+    if (qs.length > 0) lastGeneratedQs = qs;
+
+  } catch(err) {
+    typingEl.remove();
+    addMsg(i, 'ai', '連接 AI 時出現問題：' + (err.message || '請檢查 API Key 或網絡連接。'));
+  }
+  btn.disabled = false;
+}
+
+function buildSystemPrompt(s) {
+  return `你是 TIK 教學助理系統，專為補習社導師服務。你正在為以下學生提供個人化教學支援：
+
+學生資料：
+- 姓名：${s.name}
+- 年級：${s.grade}
+- 課本：${s.memory.book}
+- 考試範圍：${s.memory.scope}
+- 程度：${s.memory.level}
+- 最新弱點：${s.memory.weaknesses || '無記錄'}
+- 最新答對率：${s.rate}%
+- 已做練習記錄：${(s.memory.lastPractice||[]).join(', ')}
+- 備註：${s.memory.notes || ''}
+
+你的工作：
+1. 根據學生資料，為導師提供個人化練習題目
+2. 分析學生弱點並給出針對性建議
+3. 記錄並追蹤學習進度
+4. 生成練習題時，必須貼合課本範圍，難度符合學生程度
+5. 所有解析用繁體中文，題目可用英文
+
+生成題目格式：
+Q1. [題目]
+答案：[答案]
+解析：[繁體中文解析]
+
+請用自然對話方式回覆，簡潔有力，不要過度冗長。`;
+}
+
+function demoReply(msg, s) {
+  const m = msg.toLowerCase();
+  if (m.includes('出題') || m.includes('練習') || m.includes('題')) {
+    return `根據 ${s.name} 的課本範圍和弱點記錄，以下是針對性練習題：\n\n**Q1.** She _____ (visit) London three times.\n答案：has visited\n解析：Present Perfect 表示過去曾有的經歷，用 have/has + past participle。\n\n**Q2.** They _____ (not finish) the project yet.\n答案：haven't finished\n解析：yet 用於否定句，配合 Present Perfect 表示未完成。\n\n**Q3.** _____ you ever _____ (eat) Japanese food?\n答案：Have / eaten\n解析：疑問句 Have/Has + 主詞 + past participle，ever 表示是否曾經。\n\n需要答案解析印出 PDF 嗎？`;
+  }
+  if (m.includes('弱點') || m.includes('分析')) {
+    return `根據 ${s.name} 的記錄：\n\n📊 **最新答對率：** ${s.rate}%\n⚠️ **主要弱點：** ${s.memory.weaknesses}\n\n**建議：**\n1. 先做 3 題時態基礎鞏固\n2. 重點練習 Present Perfect vs Simple Past 的區別\n3. 目標下次答對率提升至 ${Math.min(99, s.rate + 10)}%\n\n需要我立刻生成針對弱點的練習嗎？`;
+  }
+  return `明白！我會為 ${s.name} 準備個人化練習。請告訴我具體需求，例如：題目數量、題型（填充/選擇/改錯）、重點範圍。`;
+}
+
+function extractQuestions(text) {
+  const qs = [];
+  const lines = text.split('\n');
+  lines.forEach((l, i) => {
+    if (/^Q\d+\./.test(l.trim())) qs.push(l.trim());
+  });
+  return qs;
+}
+
+// ═══════════════════════════════════════════════
+// MEMORY PANEL
+// ═══════════════════════════════════════════════
+function showMemory() {
+  const panel = document.getElementById('memory-panel');
+  const s = STUDENTS[selStudent];
+  const m = s.memory;
+  document.getElementById('memory-content').innerHTML = `
+    <div class="mem-row"><span class="mem-key">課本</span><span>${m.book}</span></div>
+    <div class="mem-row"><span class="mem-key">考試範圍</span><span>${m.scope}</span></div>
+    <div class="mem-row"><span class="mem-key">程度</span><span>${m.level}</span></div>
+    <div class="mem-row"><span class="mem-key">最新弱點</span><span style="color:#f87171;">${m.weaknesses||'無記錄'}</span></div>
+    <div class="mem-row"><span class="mem-key">答對率趨勢</span><span>${(m.history||[]).map(h=>`${h.date}: ${h.rate}%`).join(' → ')}</span></div>
+    <div class="mem-row"><span class="mem-key">上次練習</span><span>${(m.lastPractice||[]).join(', ')}</span></div>
+    <div class="mem-row"><span class="mem-key">備註</span><span>${m.notes||'—'}</span></div>
+  `;
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════
+// QUICK MARK
+// ═══════════════════════════════════════════════
+function showQuickMark() {
+  const panel = document.getElementById('quickmark-panel');
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) renderQuickMarkGrid();
+}
+function closeQuickMark() {
+  document.getElementById('quickmark-panel').style.display = 'none';
+}
+
+function renderQuickMarkGrid() {
+  const qs = lastGeneratedQs.length > 0 ? lastGeneratedQs :
+    STUDENTS[selStudent].memory.lastPractice.map((r,i) => `Q${i+1}`);
+  const n = Math.min(qs.length || 5, 8);
+  let html = '';
+  for (let i = 0; i < n; i++) {
+    html += `<div class="qm-row">
+      <span class="qm-q">Q${i+1}</span>
+      <button class="qm-btn" id="qm-${i}-c" onclick="toggleMark(${i},'c')">✓ 正確</button>
+      <button class="qm-btn" id="qm-${i}-w" onclick="toggleMark(${i},'w')">✗ 錯誤</button>
+    </div>`;
+  }
+  document.getElementById('qm-grid').innerHTML = html;
+}
+
+function toggleMark(i, type) {
+  const c = document.getElementById(`qm-${i}-c`);
+  const w = document.getElementById(`qm-${i}-w`);
+  c.className = type === 'c' ? 'qm-btn cor' : 'qm-btn';
+  w.className = type === 'w' ? 'qm-btn wro' : 'qm-btn';
+}
+
+function submitQuickMark() {
+  const results = [];
+  let correct = 0, total = 0;
+  document.querySelectorAll('.qm-row').forEach((row, i) => {
+    const c = document.getElementById(`qm-${i}-c`);
+    const w = document.getElementById(`qm-${i}-w`);
+    if (c && c.classList.contains('cor')) { results.push(`Q${i+1}:✓`); correct++; total++; }
+    else if (w && w.classList.contains('wro')) { results.push(`Q${i+1}:✗`); total++; }
+    else { total++; }
+  });
+  if (total === 0) return alert('請先標記答題結果');
+
+  const rate = Math.round(correct/total*100);
+  const s = STUDENTS[selStudent];
+  s.memory.lastPractice = results;
+
+  // Update rate
+  const newRate = Math.round((s.rate * 0.4 + rate * 0.6));
+  STUDENTS[selStudent].rate = newRate;
+  const today = new Date().toLocaleDateString('zh-HK',{month:'numeric',day:'numeric'});
+  if (!s.memory.history) s.memory.history = [];
+  s.memory.history.push({date:today, rate});
+  if (s.memory.history.length > 6) s.memory.history.shift();
+
+  safeSet('tik_mem_'+s.id, s.memory);
+  closeQuickMark();
+  renderChatStudentList();
+  renderOverview();
+
+  const summary = `已記錄批改結果：${results.join(' ')}
+📊 本次答對率：${correct}/${total}（${rate}%）
+${rate < 60 ? '⚠️ 答對率偏低，建議下次加強弱點練習' : rate >= 80 ? '✅ 表現良好！下次可以嘗試進階題' : '📈 繼續保持，穩步提升'}
+
+AI 記憶已更新。需要我根據今次結果生成下次練習嗎？`;
+
+  addMsg(selStudent, 'ai', summary);
+  addMsg(selStudent, 'user', `批改結果：${results.join(' ')}`);
+}
+
+// ═══════════════════════════════════════════════
+// PHOTO MARKING
+// ═══════════════════════════════════════════════
+function handlePhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    photoDataUrl = ev.target.result;
+    const img = document.getElementById('preview-img');
+    img.src = photoDataUrl;
+    img.style.display = 'block';
+    document.getElementById('analyze-photo-btn').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function analyzePhoto() {
+  if (!photoDataUrl) return;
+  const s = STUDENTS[selStudent];
+  closeQuickMark();
+
+  const userMsgContent = '📷 [已上傳答卷相片，請批改]';
+  addMsg(selStudent, 'user', userMsgContent);
+
+  const container = document.getElementById('chat-messages');
+  const typingEl = document.createElement('div');
+  typingEl.className = 'msg-row ai';
+  typingEl.id = 'typing-indicator';
+  typingEl.innerHTML = `<div class="msg-lbl">TIK · ${s.name}助理</div><div class="typing"><span></span><span></span><span></span> AI 正在批改答卷…</div>`;
+  container.appendChild(typingEl);
+  container.scrollTop = container.scrollHeight;
+
+  try {
+    let reply;
+    if (!apiKey) {
+      await new Promise(r => setTimeout(r, 2000));
+      reply = `已收到答卷相片，正在批改…\n\n✅ Q1 正確 — has visited\n✅ Q2 正確 — haven't finished\n❌ Q3 錯誤 — 寫了 "visited"，應為 "has visited"\n✅ Q4 正確 — have you ever\n❌ Q5 錯誤 — 寫了 "did she go"，應為 "has she gone"\n\n📊 本次答對率：3/5（60%）\n⚠️ 主要弱點：Present Perfect vs Simple Past 時態混淆\n\n已更新 ${s.name} 的記憶。建議下次針對時態區別出題。需要我現在生成嗎？`;
+    } else {
+      const base64 = photoDataUrl.split(',')[1];
+      const mediaType = photoDataUrl.split(';')[0].split(':')[1];
+      const prompt = `這是學生 ${s.name} 的英文練習答卷相片。
+課本範圍：${s.memory.scope}
+上次弱點：${s.memory.weaknesses}
+
+請：
+1. 識別並批改每道題的答案（標記✅/❌）
+2. 計算答對率
+3. 識別錯誤模式和主要弱點
+4. 給出下次練習建議
+
+用繁體中文回覆。`;
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: anthropicHeaders(),
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{
+            role: 'user',
+            content: [
+              {type:'image', source:{type:'base64', media_type:mediaType, data:base64}},
+              {type:'text', text:prompt}
+            ]
+          }]
+        })
+      });
+      reply = await parseAnthropicResponse(res);
+    }
+
+    typingEl.remove();
+    addMsg(selStudent, 'ai', reply);
+
+    // Update memory with photo analysis
+    s.memory.notes = (s.memory.notes||'') + ` [${new Date().toLocaleDateString('zh-HK')}拍照批改]`;
+    safeSet('tik_mem_'+s.id, s.memory);
+
+  } catch(err) {
+    typingEl.remove();
+    addMsg(selStudent, 'ai', '批改答卷時出現問題：' + (err.message || '請重試。'));
+  }
+  photoDataUrl = null;
+  document.getElementById('preview-img').style.display = 'none';
+  document.getElementById('analyze-photo-btn').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════
+// PDF EXPORT
+// ═══════════════════════════════════════════════
+function exportPDF() {
+  const s = STUDENTS[selStudent];
+  const history = chatHistories[selStudent] || [];
+  const aiMsgs = history.filter(m => m.role === 'ai');
+
+  let content = `TIK 練習卷\n學生：${s.name} | 年級：${s.grade} | 日期：${new Date().toLocaleDateString('zh-HK')}\n課本範圍：${s.memory.scope}\n${'─'.repeat(50)}\n\n`;
+
+  const lastAI = aiMsgs[aiMsgs.length-1];
+  if (lastAI) {
+    content += lastAI.content.replace(/<br>/g,'\n').replace(/<[^>]+>/g,'').replace(/\*\*/g,'');
+  }
+
+  const win = window.open('', '_blank');
+  win.document.write(`<html><head><title>TIK 練習卷 — ${s.name}</title>
+  <style>body{font-family:'Arial',sans-serif;padding:40px;max-width:700px;margin:0 auto;font-size:14px;line-height:1.7;}
+  h1{font-size:18px;border-bottom:2px solid #000;padding-bottom:8px;}
+  pre{white-space:pre-wrap;font-family:inherit;}</style></head><body>
+  <h1>TIK 練習卷</h1>
+  <p><strong>學生：</strong>${s.name} &nbsp;|&nbsp; <strong>年級：</strong>${s.grade} &nbsp;|&nbsp; <strong>日期：</strong>${new Date().toLocaleDateString('zh-HK')}</p>
+  <p><strong>課本範圍：</strong>${s.memory.scope}</p>
+  <hr/>
+  <pre>${content}</pre>
+  <script>
+window.onerror = function(msg, src, line, col, err) {
+  // Suppress cross-origin Script errors silently
+  if (msg === 'Script error.' || msg === 'Uncaught Error: Script error.') return true;
+  return false;
+};
+window.print();<\/script></body></html>`);
+  win.document.close();
+}
+
+// ═══════════════════════════════════════════════
+// BULK GENERATE
+// ═══════════════════════════════════════════════
+function renderBulkGrid() {
+  document.getElementById('bulk-grid').innerHTML = STUDENTS.map((s,i) => `
+    <div class="bulk-card" id="bulk-card-${i}">
+      <div class="bulk-check ${bulkSelected.has(i)?'checked':''}" onclick="toggleBulk(${i})" id="bulk-check-${i}">
+        ${bulkSelected.has(i)?'✓':''}
+      </div>
+      <div class="nc" style="margin-bottom:8px;">
+        <div class="av dark">${s.init}</div>
+        <div><div class="sname">${s.name}</div><div class="sg">${s.grade} · ${s.rate}%</div></div>
+        ${s.warn?'<span class="chip ch-w" style="margin-left:auto;">關注</span>':''}
+      </div>
+      <div style="font-size:11px;color:var(--dg);">弱點：${s.memory.weaknesses||'無記錄'}</div>
+      <div id="bulk-result-${i}" class="bulk-result" style="display:none;"></div>
+    </div>
+  `).join('');
+}
+
+function toggleBulk(i) {
+  if (bulkSelected.has(i)) bulkSelected.delete(i);
+  else bulkSelected.add(i);
+  const c = document.getElementById(`bulk-check-${i}`);
+  c.className = `bulk-check ${bulkSelected.has(i)?'checked':''}`;
+  c.textContent = bulkSelected.has(i)?'✓':'';
+}
+
+function selectAll() {
+  STUDENTS.forEach((_,i) => bulkSelected.add(i));
+  renderBulkGrid();
+}
+
+async function bulkGenerate() {
+  if (bulkSelected.size === 0) return alert('請先選擇學生');
+  const btn = document.getElementById('bulk-gen-btn');
+  btn.disabled = true;
+  btn.textContent = '生成中…';
+
+  const promises = Array.from(bulkSelected).map(i => generateForStudent(i));
+  await Promise.all(promises);
+
+  btn.disabled = false;
+  btn.textContent = '⊕ 重新生成';
+}
+
+async function generateForStudent(i) {
+  const s = STUDENTS[i];
+  const card = document.getElementById(`bulk-card-${i}`);
+  const resultEl = document.getElementById(`bulk-result-${i}`);
+  card.className = 'bulk-card generating';
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = `<span class="bulk-mini-loader"></span>AI 正在為 ${s.name} 生成練習…`;
+
+  const prompt = `你是教學助理。請為以下學生生成今日最合適的練習（3題即可）：
+學生：${s.name}，${s.grade}，程度：${s.memory.level}
+課本：${s.memory.book}，範圍：${s.memory.scope}
+最新弱點：${s.memory.weaknesses||'無'}
+答對率：${s.rate}%
+
+根據以上資料，自動判斷今日應該練習什麼，生成 3 道最合適的題目（填充題）。
+格式：Q1/Q2/Q3，每題附答案和一句繁體中文解析。保持簡潔。`;
+
+  try {
+    let reply;
+    if (!apiKey) {
+      await new Promise(r => setTimeout(r, 800 + Math.random()*1000));
+      reply = `**今日建議練習（${s.name}）**\n\nQ1. She _____ (visit) Paris twice.\n答案：has visited ｜ 解析：表示過去經歷用 Present Perfect。\n\nQ2. They _____ (not arrive) yet.\n答案：haven't arrived ｜ 解析：yet 配否定式 Present Perfect。\n\nQ3. Have you _____ (try) this dish before?\n答案：tried ｜ 解析：Have you ever + past participle。`;
+    } else {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: anthropicHeaders(),
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 600,
+          messages: [{role:'user', content:prompt}]
+        })
+      });
+      reply = await parseAnthropicResponse(res);
+    }
+
+    card.className = 'bulk-card done';
+    resultEl.innerHTML = reply.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+
+    // Add to chat history
+    addMsg(i, 'ai', `[批量備課] 今日建議練習已生成：\n\n${reply}`);
+
+  } catch(e) {
+    card.className = 'bulk-card';
+    resultEl.innerHTML = '生成失敗：' + (e.message || '請重試。');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// PROGRESS
+// ═══════════════════════════════════════════════
+function renderProgSelect() {
+  document.getElementById('prog-select').innerHTML = STUDENTS.map((s,i) =>
+    `<option value="${i}">${s.name}</option>`
+  ).join('');
+}
+
+function renderProgress() {
+  const i = parseInt(document.getElementById('prog-select').value) || 0;
+  const s = STUDENTS[i];
+  const m = s.memory;
+
+  const topics = [
+    {label:'時態判斷', pct: Math.min(99, Math.round(s.rate*0.88))},
+    {label:'句子結構', pct: Math.min(99, Math.round(s.rate*1.07))},
+    {label:'詞彙運用', pct: Math.min(99, Math.round(s.rate*1.15))},
+    {label:'語法應用', pct: Math.min(99, Math.round(s.rate*0.94))},
+  ];
+  const sorted = [...topics].sort((a,b)=>a.pct-b.pct);
+  const weak = sorted[0].label;
+
+  document.getElementById('prog-content').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;padding:13px 16px;background:#fff;border:1px solid var(--mg);border-radius:var(--r);margin-bottom:18px;">
+      <div class="av dark">${s.init}</div>
+      <div><div style="font-weight:500;">${s.name}</div><div class="sg">${s.grade} · 英文 · 第 4 週追蹤</div></div>
+      <div style="margin-left:auto;display:flex;gap:8px;">
+        ${s.warn?'<span class="chip ch-w">需要關注</span>':'<span class="chip ch-g">進度良好</span>'}
+        <button class="btn sm" onclick="goChat(${i})">開始對話</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="sc"><div class="sn">${s.rate}%</div><div class="sl">本週答對率</div></div>
+      <div class="sc"><div class="sn">${s.done}/5</div><div class="sl">完成題目</div></div>
+      <div class="sc inv"><div class="sn">${(m.history&&m.history.length>1)?((s.rate-(m.history[m.history.length-2]?.rate||s.rate))>0?'+':'')+(s.rate-(m.history[m.history.length-2]?.rate||s.rate))+'%':'—'}</div><div class="sl">較上次變化</div></div>
+    </div>
+
+    <div class="prog-grid">
+      <div class="pc">
+        <div style="font-weight:500;font-size:13px;margin-bottom:14px;">各題型答對率</div>
+        ${topics.map(t=>`
+          <div class="wk-row">
+            <span class="wk-lbl">${t.label}</span>
+            <div class="wk-bar"><div class="wk-fill ${t.pct<60?'lo':''}" style="width:${t.pct}%"></div></div>
+            <span class="wk-pct ${t.pct<60?'lo':''}">${t.pct}%</span>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="pc">
+        <div style="font-weight:500;font-size:13px;margin-bottom:14px;">答對率趨勢</div>
+        ${(m.history||[]).map(h=>`
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="font-size:11px;color:var(--dg);min-width:36px;">${h.date}</span>
+            <div class="wk-bar"><div class="wk-fill" style="width:${h.rate}%"></div></div>
+            <span style="font-size:11px;font-weight:500;">${h.rate}%</span>
+          </div>
+        `).join('') || '<div style="font-size:12px;color:var(--dg);">尚無歷史記錄</div>'}
+      </div>
+
+      <div class="pc">
+        <div style="font-weight:500;font-size:13px;margin-bottom:12px;">下週個人化學習計劃</div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--dg);line-height:1.6;">
+          <div>→ 重點加強：<strong style="color:var(--bk);">${weak}</strong>（5 題針對性練習）</div>
+          <div>→ 鞏固練習：語法應用（3 題）</div>
+          <div>→ 難度目標：${s.rate>=75?'進階':'維持中等'}（答對率需達 ${Math.min(99,s.rate+10)}% 才升難度）</div>
+          <div>→ 下次目標答對率：<strong style="color:var(--bk);">${Math.min(99,s.rate+8)}%</strong></div>
+        </div>
+      </div>
+
+      <div class="rcard full">
+        <div class="rt">家長月報</div>
+        <div class="rs">2025年5月 · 自動生成</div>
+        <div class="rc">
+          尊敬的 ${s.name} 家長：<br>
+          ${s.name} 本月在英文科的學習進度如下。本週答對率為 ${s.rate}%，完成練習 ${s.done}/5 份。
+          ${s.rate<60?'系統發現主要弱點為時態判斷，已安排針對性練習，請鼓勵多加練習。':'整體進度'+(s.rate>=80?'優秀':'良好')+'，繼續保持。'}
+          TIK 智能系統已為 ${s.name} 制定下週個人化學習計劃，目標答對率提升至 ${Math.min(99,s.rate+8)}%。如有問題，歡迎聯絡導師。
+        </div>
+        <div class="ra">
+          <button class="rbtn" onclick="alert('模擬：PDF 月報已生成')">⬇ 下載 PDF</button>
+          <button class="rbtn" onclick="alert('模擬：已發送至家長 WhatsApp')">↗ WhatsApp</button>
+          <button class="rbtn" onclick="alert('模擬：已發送至家長 Email')">✉ Email</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+try { init(); } catch(e) { console.warn("Init error:", e); }
+</script>
+</body>
+</html>
