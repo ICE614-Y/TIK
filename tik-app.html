@@ -19,11 +19,11 @@
 body{font-family:var(--sans);background:var(--lg);color:var(--bk);font-size:14px;min-height:100vh;}
 
 /* ── LAYOUT ── */
-.shell{display:grid;grid-template-columns:230px 1fr;grid-template-rows:54px auto 1fr;height:100vh;overflow:hidden;}
+.shell{display:grid;grid-template-columns:1fr;grid-template-rows:54px auto 1fr;height:100vh;overflow:hidden;padding-bottom:58px;}
 header{grid-column:1/-1;grid-row:1;background:var(--bk);display:flex;align-items:center;justify-content:space-between;padding:0 22px;z-index:200;}
 .demo-banner{grid-column:1/-1;grid-row:2;}
-aside{grid-row:3;background:var(--bk2);border-right:1px solid var(--bk4);overflow-y:auto;display:flex;flex-direction:column;}
-main{grid-row:3;overflow-y:auto;padding:26px 28px;}
+aside{display:none;}
+main{grid-row:3;overflow-y:auto;padding:22px 28px 24px;}
 
 /* ── LOGO ── */
 .logo{display:flex;align-items:center;gap:10px;}
@@ -100,7 +100,7 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
 .btn:disabled{background:#e0e0e0;color:#999;border-color:#e0e0e0;cursor:not-allowed;}
 
 /* ── CHAT LAYOUT ── */
-.chat-shell{display:grid;grid-template-columns:240px 1fr;gap:0;background:#fff;border:1px solid var(--mg);border-radius:var(--r2);overflow:hidden;height:calc(100vh - 140px);}
+.chat-shell{display:grid;grid-template-columns:240px 1fr;gap:0;background:#fff;border:1px solid var(--mg);border-radius:var(--r2);overflow:hidden;height:calc(100vh - 54px - 58px - 36px);}
 .student-list{border-right:1px solid var(--mg);overflow-y:auto;display:flex;flex-direction:column;}
 .sl-head{padding:12px 14px;border-bottom:1px solid var(--mg);font-size:12px;font-weight:500;background:var(--lg);}
 .si{display:flex;align-items:center;gap:9px;padding:10px 14px;cursor:pointer;border-bottom:1px solid #f5f5f3;transition:.1s;}
@@ -207,26 +207,42 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px;}
 
-.mob-tabbar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bk);border-top:1px solid var(--bk4);z-index:300;grid-template-columns:repeat(4,1fr);padding:6px 4px calc(6px + env(safe-area-inset-bottom));}
+.mob-tabbar{display:grid;position:fixed;bottom:0;left:0;right:0;background:var(--bk);border-top:1px solid var(--bk4);z-index:300;grid-template-columns:repeat(5,1fr);padding:6px 2px calc(6px + env(safe-area-inset-bottom));}
 .mob-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:10px 4px;min-height:44px;color:#666;font-size:10px;cursor:pointer;border:none;background:transparent;font-family:var(--sans);}
 .mob-tab.active{color:#fff;font-weight:500;}
 .mob-tab-ico{font-size:16px;}
 .mob-student-select{display:none;width:100%;padding:10px 12px;border:1px solid var(--mg);border-radius:8px;font-size:13px;font-family:var(--sans);background:#fff;margin-bottom:0;}
 .chat-topbar-inner{display:flex;flex-wrap:wrap;gap:8px;align-items:center;width:100%;}
 .chat-topbar-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:20px;}
+.feature-card{background:#fff;border:1px solid var(--mg);border-radius:var(--r);padding:14px;cursor:pointer;transition:.12s;}
+.feature-card:hover{border-color:var(--bk);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.feature-card h4{font-size:13px;font-weight:500;margin-bottom:4px;}
+.feature-card p{font-size:11px;color:var(--dg);line-height:1.5;}
+.feature-tag{display:inline-block;font-size:9px;padding:2px 6px;border-radius:10px;background:var(--muted-bg);color:var(--dg);margin-top:6px;}
+.profile-tabs{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap;}
+.profile-tab{padding:5px 12px;font-size:11px;border-radius:6px;border:1px solid var(--mg);background:#fff;cursor:pointer;font-family:var(--sans);}
+.profile-tab.active{background:var(--bk);color:#fff;border-color:var(--bk);}
+.soul-editor{width:100%;min-height:120px;padding:10px;border:1px solid var(--mg);border-radius:8px;font-size:12px;font-family:var(--sans);line-height:1.6;resize:vertical;}
+.guide-block{background:#fff;border:1px solid var(--mg);border-radius:var(--r);padding:18px;margin-bottom:14px;}
+.guide-block h3{font-family:var(--serif);font-size:17px;margin-bottom:8px;}
+.guide-block p,.guide-block li{font-size:13px;color:var(--dg);line-height:1.7;}
+.guide-block ul{margin:8px 0 0 18px;}
+.guide-diagram{font-size:11px;color:var(--dg);background:var(--muted-bg);padding:12px;border-radius:8px;margin-top:10px;font-family:monospace;white-space:pre-wrap;line-height:1.5;}
+.bulk-card-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
 
 @media(max-width:800px){
-  .shell{grid-template-columns:1fr;grid-template-rows:54px auto 1fr;padding-bottom:56px;}
-  aside{display:none;}
-  main{grid-column:1;grid-row:3;padding:16px 14px 72px;}
-  .mob-tabbar{display:grid;}
+  main{padding:16px 14px 20px;}
   .mob-student-select{display:block;}
+  .feature-grid{grid-template-columns:1fr;}
   .chat-shell{grid-template-columns:1fr;height:calc(100vh - 54px - 56px);}
   #view-chat{margin:-16px -14px !important;height:calc(100vh - 54px - 56px) !important;}
   .student-list{display:none;}
   .bulk-grid,.prog-grid,.stats{grid-template-columns:1fr;}
   .chat-topbar{flex-direction:column;align-items:stretch;}
   .chat-input-area{padding-bottom:max(12px, env(safe-area-inset-bottom));}
+  .mob-tab{font-size:9px;}
+  .mob-tab-ico{font-size:14px;}
 }
 </style>
 </head>
@@ -243,7 +259,7 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
       <button class="btn" onclick="skipKey()">先跳過（Demo 模式）</button>
     </div>
     <div style="font-size:11px;color:#bbb;margin-top:12px;">
-      沒有 API Key？<a href="https://console.anthropic.com" target="_blank" style="color:var(--blue);">到 Anthropic Console 申請</a>
+      沒有 API Key？<a href="https://console.anthropic.com" target="_blank" style="color:var(--amber);">到 Anthropic Console 申請</a>
     </div>
   </div>
 </div>
@@ -261,8 +277,11 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
     </div>
     <div class="logo-tag">Track · Improve · Know</div>
   </div>
-  <div style="display:flex;align-items:center;gap:14px;">
-    <span style="font-size:11px;color:#333;" id="api-status-top">🔴 未設定 API Key</span>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <span style="font-size:11px;color:#aaa;" id="api-status-top">未設定 API Key</span>
+    <button class="btn sm" style="background:transparent;border-color:#444;color:#888;" onclick="document.getElementById('api-modal').style.display='flex'">⚙ API</button>
+    <button class="btn sm" style="background:transparent;border-color:#444;color:#888;" onclick="exportData()">↓ 匯出</button>
+    <button class="btn sm" style="background:transparent;border-color:#444;color:#888;" onclick="document.getElementById('import-file').click()">↑ 匯入</button>
     <div class="tutor-chip">
       <div class="av" style="background:#333;color:#fff;">李</div>
       <span style="font-size:12px;color:#aaa;">李導師</span>
@@ -270,45 +289,8 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
   </div>
 </header>
 
-<div class="demo-banner" id="demo-banner">Demo 模式 — AI 回覆為預設樣本。請在設定中輸入 API Key 以使用 Claude。</div>
-
-<!-- SIDEBAR -->
-<aside>
-  <div class="nav-sec">
-    <div class="nav-lbl">主選單</div>
-    <div class="ni active" data-view="overview" onclick="nav(this)">
-      <span class="ni-ico">⊞</span>班級總覽
-      <span class="nb" id="nb-warn">2</span>
-    </div>
-    <div class="ni" data-view="chat" onclick="nav(this)">
-      <span class="ni-ico">◈</span>個人對話
-    </div>
-    <div class="ni" data-view="bulk" onclick="nav(this)">
-      <span class="ni-ico">⊕</span>批量備課
-    </div>
-    <div class="ni" data-view="progress" onclick="nav(this)">
-      <span class="ni-ico">◇</span>進度追蹤
-    </div>
-  </div>
-  <div class="nav-sec">
-    <div class="nav-lbl">設定</div>
-    <div class="ni" onclick="document.getElementById('api-modal').style.display='flex'">
-      <span class="ni-ico">⚙</span>API 設定
-    </div>
-    <div class="ni" onclick="exportData()">
-      <span class="ni-ico">↓</span>匯出資料
-    </div>
-    <div class="ni" onclick="document.getElementById('import-file').click()">
-      <span class="ni-ico">↑</span>匯入資料
-    </div>
-  </div>
-  <input type="file" id="import-file" accept="application/json,.json" style="display:none" onchange="importData(event)"/>
-  <div class="nav-bottom">
-    <div class="api-status" id="api-status-side">
-      <span class="api-dot" style="background:#555;"></span>未設定 API Key
-    </div>
-  </div>
-</aside>
+<div class="demo-banner" id="demo-banner">Demo 模式 — AI 回覆為預設樣本。請點右上角 ⚙ API 輸入 Key，或繼續 Demo 演示。</div>
+<input type="file" id="import-file" accept="application/json,.json" style="display:none" onchange="importData(event)"/>
 
 <!-- MAIN -->
 <main>
@@ -318,17 +300,20 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
   <div class="ph">
     <div><div class="pt">班級總覽</div><div class="ps">中二英文班 · 2025年5月</div></div>
     <div style="display:flex;gap:8px;">
-      <button class="btn" onclick="nav(document.querySelector('[data-view=bulk]'))">⊕ 今日備課</button>
-      <button class="btn pri" onclick="nav(document.querySelector('[data-view=chat]'))">◈ 個人對話</button>
+      <button class="btn" onclick="navTo('guide')">? 功能導覽</button>
+      <button class="btn" onclick="navTo('bulk')">⊕ 今日備課</button>
+      <button class="btn pri" onclick="navTo('chat')">◈ 個人對話</button>
     </div>
   </div>
+
+  <div class="feature-grid" id="feature-grid"></div>
 
   <div class="today-bar">
     <div>
       <div class="today-text">📅 今日備課提醒</div>
       <div class="today-sub" id="today-sub">載入中…</div>
     </div>
-    <button class="btn sm" style="background:transparent;border-color:#333;color:#888;" onclick="nav(document.querySelector('[data-view=bulk]'))">前往備課</button>
+    <button class="btn sm" style="background:transparent;border-color:#333;color:#888;" onclick="navTo('bulk')">前往備課</button>
   </div>
 
   <div class="stats" id="overview-stats">
@@ -350,7 +335,7 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
 </div>
 
 <!-- ══ CHAT ══ -->
-<div class="view" id="view-chat" style="padding:0;margin:-26px -28px;height:calc(100vh - 54px);">
+<div class="view" id="view-chat" style="padding:0;margin:-22px -28px 0;height:calc(100vh - 54px - 58px);">
   <div class="chat-shell">
     <!-- Student list -->
     <div class="student-list">
@@ -370,17 +355,31 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
             </div>
           </div>
           <div class="chat-topbar-actions">
-            <button class="btn sm" onclick="showMemory()">記憶庫</button>
+            <button class="btn sm" onclick="showStudentFile('memory')">📋 學生檔案</button>
             <button class="btn sm" onclick="exportPDF()">⬇ PDF</button>
-            <button class="btn sm" onclick="showQuickMark()">批改答卷</button>
+            <button class="btn sm" onclick="showQuickMark()">✎ 批改</button>
           </div>
         </div>
       </div>
 
-      <!-- Memory panel (hidden) -->
-      <div id="memory-panel" style="display:none;padding:10px 16px;border-bottom:1px solid var(--mg);">
-        <div style="font-size:11px;font-weight:500;color:var(--dg);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase;">AI 記憶庫</div>
-        <div class="mem-panel" id="memory-content"></div>
+      <!-- Student file panel: memory + soul + explain -->
+      <div id="student-file-panel" style="display:none;padding:10px 16px;border-bottom:1px solid var(--mg);background:var(--lg);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-size:12px;font-weight:500;">學生檔案 · <span id="file-student-name">—</span></div>
+          <button class="btn sm" onclick="closeStudentFile()">關閉</button>
+        </div>
+        <div class="profile-tabs">
+          <button class="profile-tab active" data-ptab="memory" onclick="switchProfileTab('memory')">Memory 學科記憶</button>
+          <button class="profile-tab" data-ptab="soul" onclick="switchProfileTab('soul')">Soul 個人檔案</button>
+          <button class="profile-tab" data-ptab="explain" onclick="switchProfileTab('explain')">說明</button>
+        </div>
+        <div id="profile-tab-memory" class="mem-panel" style="background:var(--bk3);"></div>
+        <div id="profile-tab-soul" style="display:none;">
+          <p style="font-size:11px;color:var(--dg);margin-bottom:8px;">興趣、目標、溝通方式 — AI 出題可融入情境，學習教練可溫和鼓勵（非醫療/心理診斷）。</p>
+          <textarea class="soul-editor" id="soul-editor" placeholder="## 興趣&#10;- 籃球&#10;&#10;## 目標&#10;- 考入 band 1&#10;&#10;## 導師備註&#10;- …"></textarea>
+          <button class="btn pri sm" style="margin-top:8px;" onclick="saveSoul()">儲存 Soul</button>
+        </div>
+        <div id="profile-tab-explain" style="display:none;font-size:12px;color:var(--dg);line-height:1.7;"></div>
       </div>
 
       <!-- Quick mark panel (hidden) -->
@@ -423,13 +422,14 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
 <div class="view" id="view-bulk">
   <div class="ph">
     <div><div class="pt">批量備課</div><div class="ps">選擇學生，AI 自動生成今日合適練習</div></div>
-    <div style="display:flex;gap:8px;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <button class="btn" onclick="selectAll()">全選</button>
-      <button class="btn pri" id="bulk-gen-btn" onclick="bulkGenerate()">⊕ 生成選中學生的練習</button>
+      <button class="btn pri" id="bulk-gen-btn" onclick="bulkGenerate()">⊕ 生成練習</button>
+      <button class="btn" id="bulk-print-btn" onclick="printBulkAll()" disabled>🖨 批量列印</button>
     </div>
   </div>
   <div class="hint-bar">
-    ✦ AI 會根據每位學生的記憶（課本範圍、上次弱點、答對率趨勢）自動決定今日最合適的練習內容和難度，無需額外設定。
+    ✦ 依 Memory（課本/弱點）+ Soul（興趣/目標）生成練習。生成後可「批量列印」或每張卡片單獨列印。
   </div>
   <div class="bulk-grid" id="bulk-grid"></div>
 </div>
@@ -443,6 +443,14 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
   <div id="prog-content"></div>
 </div>
 
+<!-- ══ GUIDE ══ -->
+<div class="view" id="view-guide">
+  <div class="ph">
+    <div><div class="pt">功能導覽</div><div class="ps">Demo 展示用 — 所有模組與資料層說明</div></div>
+  </div>
+  <div id="guide-content"></div>
+</div>
+
 </main>
 </div>
 
@@ -451,6 +459,7 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
   <button class="mob-tab" data-view="chat" onclick="navMobile('chat')"><span class="mob-tab-ico">◈</span>對話</button>
   <button class="mob-tab" data-view="bulk" onclick="navMobile('bulk')"><span class="mob-tab-ico">⊕</span>備課</button>
   <button class="mob-tab" data-view="progress" onclick="navMobile('progress')"><span class="mob-tab-ico">◇</span>進度</button>
+  <button class="mob-tab" data-view="guide" onclick="navMobile('guide')"><span class="mob-tab-ico">?</span>導覽</button>
 </nav>
 
 <script>
@@ -459,7 +468,8 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
 // ═══════════════════════════════════════════════
 const STUDENTS = [
   {id:1,name:'陳小明',init:'陳',grade:'中二',rate:52,done:4,warn:true,
-   memory:{book:'Oxford Grammar 3',scope:'Unit 5-8 Present Perfect / Past Perfect',level:'中等',weaknesses:'Present Perfect vs Simple Past 時態混淆',history:[{date:'5/14',rate:48},{date:'5/16',rate:55},{date:'5/19',rate:52}],lastPractice:['Q1:✓','Q2:✓','Q3:✗','Q4:✓','Q5:✗'],notes:'需要加強時態區別練習'}},
+   memory:{book:'Oxford Grammar 3',scope:'Unit 5-8 Present Perfect / Past Perfect',level:'中等',weaknesses:'Present Perfect vs Simple Past 時態混淆',history:[{date:'5/14',rate:48},{date:'5/16',rate:55},{date:'5/19',rate:52}],lastPractice:['Q1:✓','Q2:✓','Q3:✗','Q4:✓','Q5:✗'],notes:'需要加強時態區別練習'},
+   soul:{interests:'籃球、Minecraft',goals:'英文 band 1 · 校際籃球',learningStyle:'喜歡具體例句',mentorNotes:'週末情緒較敏感，多鼓勵',rawMd:'## 興趣\n- 籃球、Minecraft\n\n## 目標\n- 英文 band 1\n\n## 學習方式\n- 具體籃球/遊戲情境出題\n\n## 導師備註\n- 多鼓勵，避免一次太多題'}},
   {id:2,name:'李大文',init:'李',grade:'中二',rate:78,done:5,warn:false,
    memory:{book:'Oxford Grammar 3',scope:'Unit 5-8',level:'中等偏高',weaknesses:'Past Perfect 用法偶有混淆',history:[{date:'5/14',rate:72},{date:'5/16',rate:75},{date:'5/19',rate:78}],lastPractice:['Q1:✓','Q2:✓','Q3:✓','Q4:✗','Q5:✓'],notes:'進度良好，可嘗試進階題'}},
   {id:3,name:'黃美儀',init:'黃',grade:'中二',rate:85,done:5,warn:false,
@@ -477,7 +487,27 @@ const STUDENTS = [
   {id:9,name:'林思婷',init:'林',grade:'中二',rate:82,done:5,warn:false,
    memory:{book:'Oxford Grammar 3',scope:'Unit 5-8',level:'較高',weaknesses:'複合句連接詞偶爾用錯',history:[{date:'5/14',rate:78},{date:'5/16',rate:80},{date:'5/19',rate:82}],lastPractice:['Q1:✓','Q2:✓','Q3:✓','Q4:✓','Q5:✓'],notes:'整體穩定，可加強寫作'}},
   {id:10,name:'蔡俊傑',init:'蔡',grade:'中二',rate:45,done:2,warn:true,
-   memory:{book:'Oxford Grammar 3',scope:'Unit 5-6',level:'基礎',weaknesses:'動詞時態與主詞一致經常出錯',history:[{date:'5/14',rate:40},{date:'5/16',rate:43},{date:'5/19',rate:45}],lastPractice:['Q1:✗','Q2:✗','Q3:✓'],notes:'需每日短練習鞏固基礎'}},
+   memory:{book:'Oxford Grammar 3',scope:'Unit 5-6',level:'基礎',weaknesses:'動詞時態與主詞一致經常出錯',history:[{date:'5/14',rate:40},{date:'5/16',rate:43},{date:'5/19',rate:45}],lastPractice:['Q1:✗','Q2:✗','Q3:✓'],notes:'需每日短練習鞏固基礎'},
+   soul:{interests:'足球、YouTube',goals:'先穩定及格',learningStyle:'題量要少、要簡單',mentorNotes:'注意力短，每堂 15 分鐘高強度',rawMd:'## 興趣\n- 足球\n\n## 目標\n- 先穩定及格\n\n## 導師備註\n- 短題量、高頻回饋'}},
+];
+
+/** 全站 AI 行為規則（等同 skills/*.md，所有學生共用） */
+const TIK_SKILLS = `
+【TIK Skills — 出題】貼合課本範圍；難度符合程度；若有 Soul 興趣可融入題幹情境（勿偏離考試範圍）。
+【TIK Skills — 批改】標記✓/✗；指出錯因；更新弱點假設。
+【TIK Skills — 格式】Q1. 題目 / 答案： / 解析：（繁體中文）
+【TIK Skills — 邊界】僅學習與成長建議；不提供醫療/心理診斷；危機情況建議聯絡導師或專業人士。
+`;
+
+const FEATURE_LIST = [
+  {id:'overview',title:'班級總覽',desc:'10 位學生、答對率、需關注、一鍵進入對話/進度',tag:'總覽',action:()=>navTo('overview')},
+  {id:'chat',title:'個人對話',desc:'AI 出題、弱點分析、依 Memory+Soul 個人化',tag:'對話',action:()=>navTo('chat')},
+  {id:'bulk',title:'批量備課',desc:'多選學生並行生成練習 + 批量列印',tag:'備課',action:()=>navTo('bulk')},
+  {id:'mark',title:'批改答卷',desc:'快速標記對錯 或 拍照 Vision 批改',tag:'對話',action:()=>{navTo('chat');showQuickMark();}},
+  {id:'pdf',title:'PDF 匯出',desc:'單一學生最近 AI 練習列印',tag:'對話',action:()=>{navTo('chat');exportPDF();}},
+  {id:'progress',title:'進度追蹤',desc:'趨勢、批改紀錄、學習計劃、家長月報',tag:'進度',action:()=>navTo('progress')},
+  {id:'file',title:'學生檔案',desc:'Memory 學科 + Soul 個人 + 資料說明',tag:'對話',action:()=>{navTo('chat');showStudentFile('memory');}},
+  {id:'data',title:'匯出/匯入',desc:'JSON 備份全部 localStorage 資料',tag:'設定',action:()=>exportData()},
 ];
 
 let apiKey = (() => {
@@ -567,10 +597,34 @@ function renderMobStudentSelect() {
   sel.value = selStudent;
 }
 
+function defaultSoulMd(name) {
+  return `## 興趣\n- \n\n## 目標\n- \n\n## 學習方式\n- \n\n## 導師備註\n- ${name}`;
+}
+
+function getSoul(i) {
+  const s = STUDENTS[i];
+  if (!s.soul) s.soul = {rawMd: defaultSoulMd(s.name)};
+  return s.soul;
+}
+
+function soulToPrompt(soul) {
+  if (!soul) return '';
+  const md = soul.rawMd || [
+    soul.interests && `興趣：${soul.interests}`,
+    soul.goals && `目標：${soul.goals}`,
+    soul.learningStyle && `學習方式：${soul.learningStyle}`,
+    soul.mentorNotes && `導師備註：${soul.mentorNotes}`,
+  ].filter(Boolean).join('\n');
+  return md.trim() ? `\n【Soul 個人檔案】\n${md}` : '';
+}
+
 function init() {
   STUDENTS.forEach((s, i) => {
     const saved = safeGet('tik_mem_' + s.id, null);
     if (saved) STUDENTS[i].memory = Object.assign({}, STUDENTS[i].memory, saved);
+    const savedSoul = safeGet('tik_soul_' + s.id, null);
+    if (savedSoul) STUDENTS[i].soul = Object.assign({}, STUDENTS[i].soul || {}, savedSoul);
+    if (!STUDENTS[i].soul) STUDENTS[i].soul = {rawMd: defaultSoulMd(s.name)};
     chatHistories[i] = safeGet('tik_chat_' + s.id, []);
     practiceRecords[i] = safeGet('tik_practice_' + s.id, []);
   });
@@ -583,13 +637,75 @@ function init() {
   }
   updateDemoBanner();
   updateOverviewStats();
+  renderFeatureGrid();
+  renderGuide();
   renderOverview();
   renderChatStudentList();
   renderMobStudentSelect();
   renderBulkGrid();
   renderProgSelect();
   renderProgress();
+  updateBulkPrintBtn();
   selectChatStudent(0);
+}
+
+function renderFeatureGrid() {
+  const el = document.getElementById('feature-grid');
+  if (!el) return;
+  el.innerHTML = FEATURE_LIST.map(f => `
+    <div class="feature-card" onclick="FEATURE_LIST.find(x=>x.id==='${f.id}').action()">
+      <h4>${f.title}</h4>
+      <p>${f.desc}</p>
+      <span class="feature-tag">${f.tag}</span>
+    </div>
+  `).join('');
+}
+
+function renderGuide() {
+  const el = document.getElementById('guide-content');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="guide-block">
+      <h3>資料三層：Memory · Soul · Skills</h3>
+      <div class="guide-diagram">導師輸入 → Memory（學科）+ Soul（整人）
+                ↓
+         TIK_SKILLS（全站規則）注入 System Prompt
+                ↓
+         Claude → 出題 / 批改 / 建議</div>
+      <ul>
+        <li><strong>Memory</strong> — 課本、考試範圍、弱點、答對率、上次練習（學科軌跡）</li>
+        <li><strong>Soul</strong> — 興趣、目標、學習方式、導師備註（讓題目「像為這個人而設」）</li>
+        <li><strong>Skills</strong> — 全站 AI 行為手冊（出題格式、批改規則、安全邊界），非每位學生一份</li>
+      </ul>
+    </div>
+    <div class="guide-block">
+      <h3>模組一覽（點底部列切換）</h3>
+      <ul>
+        <li><strong>總覽</strong> — 班級列表、統計、功能捷徑卡片</li>
+        <li><strong>對話</strong> — AI 聊天、學生檔案、批改、單人 PDF</li>
+        <li><strong>備課</strong> — 批量生成 + 批量列印</li>
+        <li><strong>進度</strong> — 趨勢、批改紀錄、家長月報</li>
+        <li><strong>導覽</strong> — 本頁（Demo 說明）</li>
+      </ul>
+    </div>
+    <div class="guide-block">
+      <h3>Demo 建議流程（5 分鐘）</h3>
+      <ol style="margin-left:18px;line-height:1.8;font-size:13px;color:var(--dg);">
+        <li>總覽 → 點「陳小明」進對話</li>
+        <li>學生檔案 → 看 Memory + Soul（籃球情境）</li>
+        <li>輸入「出 3 題 Present Perfect」→ Demo 或真 API 回覆</li>
+        <li>備課 → 全選 → 生成 → 批量列印</li>
+        <li>進度 → 看批改紀錄與家長月報</li>
+      </ol>
+    </div>
+    <div class="feature-grid" style="margin-top:12px;">
+      ${FEATURE_LIST.map(f => `
+        <div class="feature-card" onclick="FEATURE_LIST.find(x=>x.id==='${f.id}').action()">
+          <h4>${f.title}</h4><p>${f.desc}</p>
+        </div>
+      `).join('')}
+    </div>
+  `;
 }
 
 function saveKey() {
@@ -629,18 +745,8 @@ async function parseAnthropicResponse(res) {
 }
 
 function updateApiStatus(on) {
-  const dot = document.querySelector('.api-dot');
-  const side = document.getElementById('api-status-side');
   const top = document.getElementById('api-status-top');
-  if (on) {
-    if (dot) dot.style.background = '#fff';
-    side.innerHTML = '<span class="api-dot"></span>Claude API 已連接';
-    top.textContent = 'API 已連接';
-  } else {
-    if (dot) dot.style.background = '#555';
-    side.innerHTML = '<span class="api-dot" style="background:#555"></span>未設定 API Key';
-    top.textContent = '未設定 API Key';
-  }
+  if (top) top.textContent = on ? 'API 已連接' : 'Demo / 未設定 API';
 }
 
 function exportData() {
@@ -655,7 +761,8 @@ function exportData() {
       done: s.done,
       warn: s.warn,
       chat: chatHistories[i] || [],
-      practice: getPracticeRecords(i)
+      practice: getPracticeRecords(i),
+      soul: getSoul(i)
     }))
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
@@ -686,6 +793,10 @@ function importData(e) {
           practiceRecords[i] = entry.practice;
           safeSet('tik_practice_' + STUDENTS[i].id, entry.practice);
         }
+        if (entry.soul) {
+          STUDENTS[i].soul = entry.soul;
+          safeSet('tik_soul_' + STUDENTS[i].id, entry.soul);
+        }
         safeSet('tik_mem_' + STUDENTS[i].id, STUDENTS[i].memory);
         safeSet('tik_chat_' + STUDENTS[i].id, chatHistories[i] || []);
       });
@@ -711,15 +822,16 @@ function importData(e) {
 function nav(el) {
   if (!el || !el.dataset.view) return;
   const id = el.dataset.view;
-  document.querySelectorAll('.ni').forEach(n => n.classList.toggle('active', n.dataset.view === id));
   document.querySelectorAll('.mob-tab').forEach(t => t.classList.toggle('active', t.dataset.view === id));
   document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
-  document.getElementById('view-' + id).classList.add('on');
+  const view = document.getElementById('view-' + id);
+  if (view) view.classList.add('on');
   if (id === 'progress') renderProgress();
+  if (id === 'guide') renderGuide();
 }
 
 function navTo(id) {
-  const el = document.querySelector('aside .ni[data-view="' + id + '"]') || document.querySelector('.mob-tab[data-view="' + id + '"]');
+  const el = document.querySelector('.mob-tab[data-view="' + id + '"]');
   if (el) nav(el);
 }
 
@@ -772,7 +884,7 @@ function selectChatStudent(i) {
   document.getElementById('chat-av').textContent = s.init;
   document.getElementById('chat-name').textContent = s.name;
   document.getElementById('chat-sub').textContent = `${s.grade} · 英文 · 答對率 ${s.rate}%`;
-  document.getElementById('memory-panel').style.display = 'none';
+  document.getElementById('student-file-panel').style.display = 'none';
   document.getElementById('quickmark-panel').style.display = 'none';
   renderMessages();
 
@@ -905,26 +1017,34 @@ async function callClaude(i, userMsg) {
   btn.disabled = false;
 }
 
+function studentIndex(s) {
+  return STUDENTS.findIndex(st => st.id === s.id);
+}
+
 function buildSystemPrompt(s) {
+  const soulBlock = soulToPrompt(getSoul(studentIndex(s)));
   return `你是 TIK 教學助理系統，專為補習社導師服務。你正在為以下學生提供個人化教學支援：
 
-學生資料：
-- 姓名：${s.name}
-- 年級：${s.grade}
+${TIK_SKILLS}
+
+【Memory 學科記憶】
+- 姓名：${s.name} · 年級：${s.grade}
 - 課本：${s.memory.book}
 - 考試範圍：${s.memory.scope}
 - 程度：${s.memory.level}
 - 最新弱點：${s.memory.weaknesses || '無記錄'}
 - 最新答對率：${s.rate}%
-- 已做練習記錄：${(s.memory.lastPractice||[]).join(', ')}
+- 已做練習：${(s.memory.lastPractice||[]).join(', ')}
 - 備註：${s.memory.notes || ''}
+${soulBlock}
 
 你的工作：
 1. 根據學生資料，為導師提供個人化練習題目
 2. 分析學生弱點並給出針對性建議
 3. 記錄並追蹤學習進度
-4. 生成練習題時，必須貼合課本範圍，難度符合學生程度
-5. 所有解析用繁體中文，題目可用英文
+4. 生成練習題時，必須貼合課本範圍；若有 Soul 興趣可融入題幹情境
+5. 可作學習教練式鼓勵，但不替代專業輔導
+6. 所有解析用繁體中文，題目可用英文
 
 生成題目格式：
 Q1. [題目]
@@ -937,7 +1057,9 @@ Q1. [題目]
 function demoReply(msg, s) {
   const m = msg.toLowerCase();
   if (m.includes('出題') || m.includes('練習') || m.includes('題')) {
-    return `根據 ${s.name} 的課本範圍和弱點記錄，以下是針對性練習題：\n\n**Q1.** She _____ (visit) London three times.\n答案：has visited\n解析：Present Perfect 表示過去曾有的經歷，用 have/has + past participle。\n\n**Q2.** They _____ (not finish) the project yet.\n答案：haven't finished\n解析：yet 用於否定句，配合 Present Perfect 表示未完成。\n\n**Q3.** _____ you ever _____ (eat) Japanese food?\n答案：Have / eaten\n解析：疑問句 Have/Has + 主詞 + past participle，ever 表示是否曾經。\n\n需要答案解析印出 PDF 嗎？`;
+    const soul = getSoul(studentIndex(s));
+    const hint = soul.interests ? `\n（已融入興趣情境：${soul.interests}）` : '';
+    return `根據 ${s.name} 的 Memory + Soul 檔案，以下是針對性練習題：${hint}\n\n**Q1.** She _____ (visit) London three times.\n答案：has visited\n解析：Present Perfect 表示過去曾有的經歷，用 have/has + past participle。\n\n**Q2.** They _____ (not finish) the project yet.\n答案：haven't finished\n解析：yet 用於否定句，配合 Present Perfect 表示未完成。\n\n**Q3.** _____ you ever _____ (eat) Japanese food?\n答案：Have / eaten\n解析：疑問句 Have/Has + 主詞 + past participle，ever 表示是否曾經。\n\n需要列印 PDF 嗎？`;
   }
   if (m.includes('弱點') || m.includes('分析')) {
     return `根據 ${s.name} 的記錄：\n\n📊 **最新答對率：** ${s.rate}%\n⚠️ **主要弱點：** ${s.memory.weaknesses}\n\n**建議：**\n1. 先做 3 題時態基礎鞏固\n2. 重點練習 Present Perfect vs Simple Past 的區別\n3. 目標下次答對率提升至 ${Math.min(99, s.rate + 10)}%\n\n需要我立刻生成針對弱點的練習嗎？`;
@@ -955,22 +1077,56 @@ function extractQuestions(text) {
 }
 
 // ═══════════════════════════════════════════════
-// MEMORY PANEL
+// STUDENT FILE — Memory / Soul / Explain
 // ═══════════════════════════════════════════════
-function showMemory() {
-  const panel = document.getElementById('memory-panel');
+function showStudentFile(tab) {
+  const panel = document.getElementById('student-file-panel');
   const s = STUDENTS[selStudent];
-  const m = s.memory;
-  document.getElementById('memory-content').innerHTML = `
+  document.getElementById('file-student-name').textContent = s.name;
+  renderMemoryTab();
+  const soul = getSoul(selStudent);
+  document.getElementById('soul-editor').value = soul.rawMd || soulToPrompt(soul).replace('【Soul 個人檔案】\n','');
+  document.getElementById('profile-tab-explain').innerHTML = `
+    <p><strong>Memory</strong> = 學科軌跡（課本、弱點、答對率）。每次批改會更新。</p>
+    <p style="margin-top:8px;"><strong>Soul</strong> = 整人檔案（興趣、目標）。讓 AI 出題更貼學生生活，可當學習教練語氣。</p>
+    <p style="margin-top:8px;"><strong>Skills</strong> = 全站規則（見功能導覽），控制出題格式與安全邊界。</p>
+    <p style="margin-top:8px;font-size:11px;">儲存位置：tik_mem_${s.id} · tik_soul_${s.id}</p>
+  `;
+  panel.style.display = 'block';
+  switchProfileTab(tab || 'memory');
+  document.getElementById('quickmark-panel').style.display = 'none';
+}
+
+function closeStudentFile() {
+  document.getElementById('student-file-panel').style.display = 'none';
+}
+
+function switchProfileTab(tab) {
+  document.querySelectorAll('.profile-tab').forEach(t => t.classList.toggle('active', t.dataset.ptab === tab));
+  document.getElementById('profile-tab-memory').style.display = tab === 'memory' ? 'block' : 'none';
+  document.getElementById('profile-tab-soul').style.display = tab === 'soul' ? 'block' : 'none';
+  document.getElementById('profile-tab-explain').style.display = tab === 'explain' ? 'block' : 'none';
+}
+
+function renderMemoryTab() {
+  const m = STUDENTS[selStudent].memory;
+  document.getElementById('profile-tab-memory').innerHTML = `
     <div class="mem-row"><span class="mem-key">課本</span><span>${m.book}</span></div>
     <div class="mem-row"><span class="mem-key">考試範圍</span><span>${m.scope}</span></div>
     <div class="mem-row"><span class="mem-key">程度</span><span>${m.level}</span></div>
     <div class="mem-row"><span class="mem-key">最新弱點</span><span style="color:var(--amber);">${m.weaknesses||'無記錄'}</span></div>
-    <div class="mem-row"><span class="mem-key">答對率趨勢</span><span>${(m.history||[]).map(h=>`${h.date}: ${h.rate}%`).join(' → ')}</span></div>
+    <div class="mem-row"><span class="mem-key">答對率趨勢</span><span>${getTrendHistory(selStudent).map(h=>`${h.date}: ${h.rate}%`).join(' → ')}</span></div>
     <div class="mem-row"><span class="mem-key">上次練習</span><span>${(m.lastPractice||[]).join(', ')}</span></div>
     <div class="mem-row"><span class="mem-key">備註</span><span>${m.notes||'—'}</span></div>
   `;
-  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveSoul() {
+  const s = STUDENTS[selStudent];
+  const md = document.getElementById('soul-editor').value.trim();
+  s.soul = Object.assign(getSoul(selStudent), {rawMd: md});
+  safeSet('tik_soul_' + s.id, s.soul);
+  alert('Soul 已儲存');
 }
 
 // ═══════════════════════════════════════════════
@@ -1197,6 +1353,70 @@ window.print();<\/script></body></html>`);
   win.document.close();
 }
 
+function stripHtml(html) {
+  return (html || '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/\*\*/g, '');
+}
+
+function printWorksheet(title, sections) {
+  const body = sections.map(sec => `
+    <section class="sheet">
+      <h2>${sec.title}</h2>
+      <p class="meta">${sec.meta || ''}</p>
+      <pre>${sec.content}</pre>
+    </section>
+  `).join('');
+  const win = window.open('', '_blank');
+  if (!win) return alert('請允許彈出視窗以列印');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>${title}</title>
+  <style>
+    body{font-family:Arial,sans-serif;padding:24px;font-size:13px;line-height:1.65;}
+    h1{font-size:18px;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:20px;}
+    .sheet{page-break-after:always;margin-bottom:32px;}
+    .sheet:last-child{page-break-after:auto;}
+    h2{font-size:15px;margin-bottom:4px;}
+    .meta{font-size:11px;color:#666;margin-bottom:10px;}
+    pre{white-space:pre-wrap;font-family:inherit;}
+  </style></head><body>
+  <h1>${title}</h1>
+  ${body}
+  <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+function printBulkOne(i) {
+  const data = bulkResults[i];
+  if (!data || !data.plain) return alert('請先生成該學生的練習');
+  const s = STUDENTS[i];
+  printWorksheet('TIK 練習卷 — ' + s.name, [{
+    title: s.name + ' · ' + s.grade,
+    meta: '課本範圍：' + s.memory.scope + ' · ' + new Date().toLocaleDateString('zh-HK'),
+    content: data.plain
+  }]);
+}
+
+function printBulkAll() {
+  const indices = Array.from(bulkSelected).filter(i => bulkResults[i] && bulkResults[i].plain);
+  if (!indices.length) return alert('請先為已選學生生成練習');
+  const sections = indices.map(i => {
+    const s = STUDENTS[i];
+    return {
+      title: s.name + ' · ' + s.grade,
+      meta: '課本：' + s.memory.scope,
+      content: bulkResults[i].plain
+    };
+  });
+  printWorksheet('TIK 批量備課 — ' + sections.length + ' 份', sections);
+}
+
+function updateBulkPrintBtn() {
+  const btn = document.getElementById('bulk-print-btn');
+  if (!btn) return;
+  const n = Array.from(bulkSelected).filter(i => bulkResults[i] && bulkResults[i].plain).length;
+  btn.disabled = n === 0;
+  btn.textContent = n ? '🖨 批量列印 (' + n + ')' : '🖨 批量列印';
+}
+
 // ═══════════════════════════════════════════════
 // BULK GENERATE
 // ═══════════════════════════════════════════════
@@ -1213,8 +1433,13 @@ function renderBulkGrid() {
       </div>
       <div style="font-size:11px;color:var(--dg);">弱點：${s.memory.weaknesses||'無記錄'}</div>
       <div id="bulk-result-${i}" class="bulk-result" style="display:none;"></div>
+      <div class="bulk-card-actions" id="bulk-actions-${i}" style="display:none;">
+        <button class="btn sm" onclick="printBulkOne(${i})">🖨 列印此份</button>
+        <button class="btn sm" onclick="goChat(${i})">對話</button>
+      </div>
     </div>
   `).join('');
+  updateBulkPrintBtn();
 }
 
 function toggleBulk(i) {
@@ -1223,6 +1448,7 @@ function toggleBulk(i) {
   const c = document.getElementById(`bulk-check-${i}`);
   c.className = `bulk-check ${bulkSelected.has(i)?'checked':''}`;
   c.textContent = bulkSelected.has(i)?'✓':'';
+  updateBulkPrintBtn();
 }
 
 function selectAll() {
@@ -1245,6 +1471,7 @@ async function bulkGenerate() {
     isBulkRunning = false;
     btn.disabled = false;
     btn.textContent = '⊕ 重新生成';
+    updateBulkPrintBtn();
   }
 }
 
@@ -1256,14 +1483,16 @@ async function generateForStudent(i) {
   resultEl.style.display = 'block';
   resultEl.innerHTML = `<span class="bulk-mini-loader"></span>AI 正在為 ${s.name} 生成練習…`;
 
-  const prompt = `你是教學助理。請為以下學生生成今日最合適的練習（3題即可）：
+  const soulBlock = soulToPrompt(getSoul(i));
+  const prompt = `你是教學助理。${TIK_SKILLS}
+請為以下學生生成今日最合適的練習（3題即可）：
 學生：${s.name}，${s.grade}，程度：${s.memory.level}
 課本：${s.memory.book}，範圍：${s.memory.scope}
 最新弱點：${s.memory.weaknesses||'無'}
 答對率：${s.rate}%
+${soulBlock}
 
-根據以上資料，自動判斷今日應該練習什麼，生成 3 道最合適的題目（填充題）。
-格式：Q1/Q2/Q3，每題附答案和一句繁體中文解析。保持簡潔。`;
+根據 Memory + Soul，自動判斷今日練習；若有興趣可融入題幹。3 道填充題，每題附答案與一句繁體中文解析。`;
 
   try {
     let reply;
@@ -1285,9 +1514,13 @@ async function generateForStudent(i) {
 
     card.className = 'bulk-card done';
     resultEl.innerHTML = reply.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+    bulkResults[i] = {plain: reply.replace(/\*\*/g, ''), html: resultEl.innerHTML, at: Date.now()};
+    const actions = document.getElementById('bulk-actions-' + i);
+    if (actions) actions.style.display = 'flex';
 
     addMsg(i, 'ai', `[批量備課] 今日建議練習已生成：\n\n${reply}`);
     addPracticeRecord(i, {rate: s.rate, sessionRate: s.rate, results: [], source: 'bulk', notes: '批量備課生成'});
+    updateBulkPrintBtn();
 
   } catch(e) {
     card.className = 'bulk-card';
