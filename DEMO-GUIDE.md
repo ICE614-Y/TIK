@@ -117,5 +117,20 @@ A: Skills 限制以學習為主；導師模式才可溫和鼓勵，不做診斷�
 **Q: Memory 和 Soul 會不會衝突？**  
 A: 不會。Memory 管「考試範圍內學得如何」，Soul 管「怎樣寫題他更想寫」。
 
-**Q: 批量列印在哪？**  
-A: 備課頁生成後 → 「批量列印 (N)」或每卡「列印此份」。
+**Q: PDF 在哪下載？**  
+A: 個人對話 **⬇ PDF**；批量備課 **Demo PDF** 或每卡 **⬇ Demo PDF**。
+
+**Q: PDF 從哪來？**  
+A: Demo 使用靜態檔 `assets/demo-worksheet.pdf`（自行放入）。檔名含學生姓名，內容相同。
+
+---
+
+## 六、Demo 試卷 PDF
+
+1. 用 Word / Canva / Claude 等做好練習卷 PDF  
+2. 存為 **`assets/demo-worksheet.pdf`**（見 [assets/README.md](assets/README.md)）  
+3. 在 App 按 **⬇ PDF** 或 **Demo PDF** 下載  
+
+尚未放置檔案時，App 會提示路徑。Demo 展示時可向評審說明：「正式版將依 Memory + Soul 個人化生成同級排版試卷。」
+
+---

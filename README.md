@@ -48,13 +48,23 @@ ipconfig getifaddr en0   # 例如 192.168.1.145
 ## 功能模組
 
 - **班級總覽** — 10 位樣本學生、功能捷徑卡片
-- **個人對話** — AI 對話、**學生檔案（Memory + Soul）**、批改、PDF
-- **批量備課** — 並行生成 + **批量列印**
+- **個人對話** — AI 對話、**學生檔案（Memory + Soul）**、批改、**Demo PDF 下載**
+- **批量備課** — 並行生成 + **Demo PDF 下載**
 - **進度追蹤** — 趨勢、批改紀錄、家長月報
 - **功能導覽** — Demo 說明與 5 分鐘腳本
 - **底部固定列** — 全裝置五個 Tab 切換模組
 
 詳見 [DEMO-GUIDE.md](DEMO-GUIDE.md)（Memory / Soul / Skills 教學）。
+
+## Demo 試卷 PDF
+
+將你的示範 PDF 放到：
+
+```
+assets/demo-worksheet.pdf
+```
+
+App 內 **⬇ PDF** / **Demo PDF** 會下載此檔（檔名含學生姓名）。說明見 [assets/README.md](assets/README.md)。
 
 ## 資料三層
 

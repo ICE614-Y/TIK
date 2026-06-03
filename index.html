@@ -356,7 +356,7 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
           </div>
           <div class="chat-topbar-actions">
             <button class="btn sm" onclick="showStudentFile('memory')">📋 學生檔案</button>
-            <button class="btn sm" onclick="exportPDF()">⬇ PDF</button>
+            <button class="btn sm" onclick="exportPDF()" title="Demo：下載 assets/demo-worksheet.pdf">⬇ PDF</button>
             <button class="btn sm" onclick="showQuickMark()">✎ 批改</button>
           </div>
         </div>
@@ -425,11 +425,11 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <button class="btn" onclick="selectAll()">全選</button>
       <button class="btn pri" id="bulk-gen-btn" onclick="bulkGenerate()">⊕ 生成練習</button>
-      <button class="btn" id="bulk-print-btn" onclick="printBulkAll()" disabled>🖨 批量列印</button>
+      <button class="btn" id="bulk-print-btn" onclick="printBulkAll()" disabled title="Demo：下載同一份試卷 PDF">🖨 Demo PDF</button>
     </div>
   </div>
   <div class="hint-bar">
-    ✦ 依 Memory（課本/弱點）+ Soul（興趣/目標）生成練習。生成後可「批量列印」或每張卡片單獨列印。
+    ✦ 依 Memory（課本/弱點）+ Soul（興趣/目標）生成練習。PDF 為 Demo 靜態試卷（`assets/demo-worksheet.pdf`），正式版將個人化生成。
   </div>
   <div class="bulk-grid" id="bulk-grid"></div>
 </div>
@@ -504,7 +504,7 @@ const FEATURE_LIST = [
   {id:'chat',title:'個人對話',desc:'AI 出題、弱點分析、依 Memory+Soul 個人化',tag:'對話',action:()=>navTo('chat')},
   {id:'bulk',title:'批量備課',desc:'多選學生並行生成練習 + 批量列印',tag:'備課',action:()=>navTo('bulk')},
   {id:'mark',title:'批改答卷',desc:'快速標記對錯 或 拍照 Vision 批改',tag:'對話',action:()=>{navTo('chat');showQuickMark();}},
-  {id:'pdf',title:'PDF 匯出',desc:'單一學生最近 AI 練習列印',tag:'對話',action:()=>{navTo('chat');exportPDF();}},
+  {id:'pdf',title:'PDF 匯出',desc:'下載 Demo 試卷 assets/demo-worksheet.pdf',tag:'對話',action:()=>{navTo('chat');exportPDF();}},
   {id:'progress',title:'進度追蹤',desc:'趨勢、批改紀錄、學習計劃、家長月報',tag:'進度',action:()=>navTo('progress')},
   {id:'file',title:'學生檔案',desc:'Memory 學科 + Soul 個人 + 資料說明',tag:'對話',action:()=>{navTo('chat');showStudentFile('memory');}},
   {id:'data',title:'匯出/匯入',desc:'JSON 備份全部 localStorage 資料',tag:'設定',action:()=>exportData()},
@@ -1318,103 +1318,64 @@ async function analyzePhoto() {
 }
 
 // ═══════════════════════════════════════════════
-// PDF EXPORT
+// PDF EXPORT (Demo — static file)
+// Place your PDF at: assets/demo-worksheet.pdf
 // ═══════════════════════════════════════════════
+const DEMO_PDF_PATH = 'assets/demo-worksheet.pdf';
+
+async function demoPdfAvailable() {
+  try {
+    const res = await fetch(DEMO_PDF_PATH, { method: 'HEAD', cache: 'no-store' });
+    return res.ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+function safePdfFilename(name) {
+  return (name || 'TIK-練習卷-demo').replace(/[/\\?%*:|"<>]/g, '-');
+}
+
+async function downloadDemoPdf(filename) {
+  const ok = await demoPdfAvailable();
+  if (!ok) {
+    alert('Demo 試卷尚未放置。\n\n請將你的 PDF 存為：\nassets/demo-worksheet.pdf\n\n（正式版將依學生資料動態生成）');
+    return false;
+  }
+  const base = safePdfFilename(filename);
+  const a = document.createElement('a');
+  a.href = DEMO_PDF_PATH;
+  a.download = base.endsWith('.pdf') ? base : base + '.pdf';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  return true;
+}
+
 function exportPDF() {
   const s = STUDENTS[selStudent];
-  const history = chatHistories[selStudent] || [];
-  const aiMsgs = history.filter(m => m.role === 'ai');
-
-  let content = `TIK 練習卷\n學生：${s.name} | 年級：${s.grade} | 日期：${new Date().toLocaleDateString('zh-HK')}\n課本範圍：${s.memory.scope}\n${'─'.repeat(50)}\n\n`;
-
-  const lastAI = aiMsgs[aiMsgs.length-1];
-  if (lastAI) {
-    content += lastAI.content.replace(/<br>/g,'\n').replace(/<[^>]+>/g,'').replace(/\*\*/g,'');
-  }
-
-  const win = window.open('', '_blank');
-  if (!win) return alert('請允許彈出視窗以匯出 PDF');
-  win.document.write(`<html><head><title>TIK 練習卷 — ${s.name}</title>
-  <style>body{font-family:'Arial',sans-serif;padding:40px;max-width:700px;margin:0 auto;font-size:14px;line-height:1.7;}
-  h1{font-size:18px;border-bottom:2px solid #000;padding-bottom:8px;}
-  pre{white-space:pre-wrap;font-family:inherit;}</style></head><body>
-  <h1>TIK 練習卷</h1>
-  <p><strong>學生：</strong>${s.name} &nbsp;|&nbsp; <strong>年級：</strong>${s.grade} &nbsp;|&nbsp; <strong>日期：</strong>${new Date().toLocaleDateString('zh-HK')}</p>
-  <p><strong>課本範圍：</strong>${s.memory.scope}</p>
-  <hr/>
-  <pre>${content}</pre>
-  <script>
-window.onerror = function(msg, src, line, col, err) {
-  // Suppress cross-origin Script errors silently
-  if (msg === 'Script error.' || msg === 'Uncaught Error: Script error.') return true;
-  return false;
-};
-window.print();<\/script></body></html>`);
-  win.document.close();
-}
-
-function stripHtml(html) {
-  return (html || '').replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '').replace(/\*\*/g, '');
-}
-
-function printWorksheet(title, sections) {
-  const body = sections.map(sec => `
-    <section class="sheet">
-      <h2>${sec.title}</h2>
-      <p class="meta">${sec.meta || ''}</p>
-      <pre>${sec.content}</pre>
-    </section>
-  `).join('');
-  const win = window.open('', '_blank');
-  if (!win) return alert('請允許彈出視窗以列印');
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>${title}</title>
-  <style>
-    body{font-family:Arial,sans-serif;padding:24px;font-size:13px;line-height:1.65;}
-    h1{font-size:18px;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:20px;}
-    .sheet{page-break-after:always;margin-bottom:32px;}
-    .sheet:last-child{page-break-after:auto;}
-    h2{font-size:15px;margin-bottom:4px;}
-    .meta{font-size:11px;color:#666;margin-bottom:10px;}
-    pre{white-space:pre-wrap;font-family:inherit;}
-  </style></head><body>
-  <h1>${title}</h1>
-  ${body}
-  <script>window.onload=function(){window.print();}<\/script>
-  </body></html>`);
-  win.document.close();
+  const date = new Date().toISOString().slice(0, 10);
+  downloadDemoPdf('TIK-練習卷-' + s.name + '-' + date + '.pdf');
 }
 
 function printBulkOne(i) {
-  const data = bulkResults[i];
-  if (!data || !data.plain) return alert('請先生成該學生的練習');
   const s = STUDENTS[i];
-  printWorksheet('TIK 練習卷 — ' + s.name, [{
-    title: s.name + ' · ' + s.grade,
-    meta: '課本範圍：' + s.memory.scope + ' · ' + new Date().toLocaleDateString('zh-HK'),
-    content: data.plain
-  }]);
+  const date = new Date().toISOString().slice(0, 10);
+  downloadDemoPdf('TIK-練習卷-' + s.name + '-' + date + '.pdf');
 }
 
 function printBulkAll() {
-  const indices = Array.from(bulkSelected).filter(i => bulkResults[i] && bulkResults[i].plain);
-  if (!indices.length) return alert('請先為已選學生生成練習');
-  const sections = indices.map(i => {
-    const s = STUDENTS[i];
-    return {
-      title: s.name + ' · ' + s.grade,
-      meta: '課本：' + s.memory.scope,
-      content: bulkResults[i].plain
-    };
-  });
-  printWorksheet('TIK 批量備課 — ' + sections.length + ' 份', sections);
+  if (bulkSelected.size === 0) return alert('請先選擇學生');
+  const date = new Date().toISOString().slice(0, 10);
+  downloadDemoPdf('TIK-批量備課-demo-' + date + '.pdf');
 }
 
 function updateBulkPrintBtn() {
   const btn = document.getElementById('bulk-print-btn');
   if (!btn) return;
-  const n = Array.from(bulkSelected).filter(i => bulkResults[i] && bulkResults[i].plain).length;
+  const n = bulkSelected.size;
   btn.disabled = n === 0;
-  btn.textContent = n ? '🖨 批量列印 (' + n + ')' : '🖨 批量列印';
+  btn.textContent = n ? '🖨 Demo PDF (' + n + ')' : '🖨 Demo PDF';
 }
 
 // ═══════════════════════════════════════════════
@@ -1434,7 +1395,7 @@ function renderBulkGrid() {
       <div style="font-size:11px;color:var(--dg);">弱點：${s.memory.weaknesses||'無記錄'}</div>
       <div id="bulk-result-${i}" class="bulk-result" style="display:none;"></div>
       <div class="bulk-card-actions" id="bulk-actions-${i}" style="display:none;">
-        <button class="btn sm" onclick="printBulkOne(${i})">🖨 列印此份</button>
+        <button class="btn sm" onclick="printBulkOne(${i})">⬇ Demo PDF</button>
         <button class="btn sm" onclick="goChat(${i})">對話</button>
       </div>
     </div>
