@@ -1177,6 +1177,7 @@ function exportPDF() {
   }
 
   const win = window.open('', '_blank');
+  if (!win) return alert('請允許彈出視窗以匯出 PDF');
   win.document.write(`<html><head><title>TIK 練習卷 — ${s.name}</title>
   <style>body{font-family:'Arial',sans-serif;padding:40px;max-width:700px;margin:0 auto;font-size:14px;line-height:1.7;}
   h1{font-size:18px;border-bottom:2px solid #000;padding-bottom:8px;}
