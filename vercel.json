@@ -1,7 +1,5 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/tik-app.html" },
-    { "source": "/index", "destination": "/tik-app.html" },
     { "source": "/app", "destination": "/tik-app.html" }
   ]
 }
