@@ -242,6 +242,9 @@ tr:hover td{background:#fafaf8;cursor:pointer;}
 .guide-block p,.guide-block li{font-size:13px;color:var(--dg);line-height:1.7;}
 .guide-block ul{margin:8px 0 0 18px;}
 .guide-diagram{font-size:11px;color:var(--dg);background:var(--muted-bg);padding:12px;border-radius:8px;margin-top:10px;font-family:monospace;white-space:pre-wrap;line-height:1.5;}
+.guide-worksheet-rows{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.guide-worksheet-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.guide-worksheet-label{min-width:36px;font-size:13px;font-weight:600;color:var(--bk);}
 .bulk-card-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
 
 @media(max-width:800px){
@@ -526,6 +529,12 @@ const FEATURE_LIST = [
   {id:'data',title:'匯出/匯入',desc:'JSON 備份全部 localStorage 資料',tag:'設定',action:()=>exportData()},
 ];
 
+const GUIDE_WORKSHEETS = {
+  physics: { path: 'assets/demo-worksheet-physics.pdf', label: '物理' },
+  chemistry: { path: 'assets/demo-worksheet-chemistry.pdf', label: '化學' },
+  english: { path: 'assets/demo-worksheet-english.pdf', label: '英文' },
+};
+
 let apiKey = (() => {
   try {
     const raw = localStorage.getItem('tik_api_key');
@@ -727,6 +736,20 @@ function renderGuide() {
       </ul>
     </div>
     <div class="guide-block">
+      <h3>示範試卷（物理 · 化學 · 英文）</h3>
+      <p>以下為 AI 生成之 Demo 練習卷樣本，供評審了解出題深度與排版水準（靜態 PDF；正式版將依學生 Memory + Soul 個人化）。</p>
+      <div class="guide-worksheet-rows">
+        ${Object.keys(GUIDE_WORKSHEETS).map(key => {
+          const w = GUIDE_WORKSHEETS[key];
+          return `<div class="guide-worksheet-row">
+            <span class="guide-worksheet-label">${w.label}</span>
+            <button type="button" class="btn sm" onclick="previewGuideWorksheet('${key}')">預覽</button>
+            <button type="button" class="btn sm" onclick="downloadGuideWorksheet('${key}')">下載</button>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="guide-block">
       <h3>Demo 建議流程（5 分鐘）</h3>
       <ol style="margin-left:18px;line-height:1.8;font-size:13px;color:var(--dg);">
         <li>總覽 → 點「陳小明」進對話</li>
@@ -734,6 +757,7 @@ function renderGuide() {
         <li>輸入「出 3 題 Present Perfect」→ Demo 或真 API 回覆</li>
         <li>備課 → 全選 → 生成 → 批量列印</li>
         <li>進度 → 看批改紀錄與家長月報</li>
+        <li>導覽 → 示範試卷：預覽物理／化學／英文 AI 練習卷</li>
       </ol>
     </div>
     <div class="guide-block">
@@ -1359,6 +1383,43 @@ async function analyzePhoto() {
 // Place your PDF at: assets/demo-worksheet.pdf
 // ═══════════════════════════════════════════════
 const DEMO_PDF_PATH = 'assets/demo-worksheet.pdf';
+
+async function guideWorksheetAvailable(path) {
+  try {
+    const res = await fetch(path, { method: 'HEAD', cache: 'no-store' });
+    return res.ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+async function previewGuideWorksheet(subject) {
+  const w = GUIDE_WORKSHEETS[subject];
+  if (!w) return;
+  const ok = await guideWorksheetAvailable(w.path);
+  if (!ok) {
+    alert('尚未放置 ' + w.label + ' 示範試卷。\n\n請將 PDF 存為：\n' + w.path);
+    return;
+  }
+  window.open(w.path, '_blank', 'noopener');
+}
+
+async function downloadGuideWorksheet(subject) {
+  const w = GUIDE_WORKSHEETS[subject];
+  if (!w) return;
+  const ok = await guideWorksheetAvailable(w.path);
+  if (!ok) {
+    alert('尚未放置 ' + w.label + ' 示範試卷。\n\n請將 PDF 存為：\n' + w.path);
+    return;
+  }
+  const base = safePdfFilename('TIK-' + w.label + '-示範試卷');
+  const a = document.createElement('a');
+  a.href = w.path;
+  a.download = base.endsWith('.pdf') ? base : base + '.pdf';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
 
 async function demoPdfAvailable() {
   try {
